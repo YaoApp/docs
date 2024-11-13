@@ -26,7 +26,7 @@ Yao has a built-in suite of tools essential for application development, such as
 - **Database**: A powerful ORM for database interactions.
 - **File System**: A virtual file system that can store various types of data.
 
-More features can be found in the **[Why-Yao document](getting-started/why-yao)**.
+More features can be found in the **[Why Yao document](getting-started/why-yao)**.
 
 All these features are packaged into a single binary with no package or toolchain dependencies. **Just download and run it to start building your application.**
 
@@ -34,4 +34,150 @@ Yao can bring you a whole new development experience, increasing your developmen
 
 ## Quickstart
 
+To get started with Yao, follow these steps:
+
+### Step 1: Install Yao
+
+Follow the Installation guide to install Yao on your machine or server. Each machine or server needs only one installation.
+
+Linux and macOS:
+
+```bash
+curl -fsSL https://yaoapps.com/install.sh | bash
+```
+
+Windows (**WSL2 Required**):
+
+```powershell
+powershell -c "irm yaoapps.com/install.ps1 | iex"
+```
+
+👉 [Installation guide](getting-started/installation)
+
+### Step 2: Create a New Project
+
+Create a new project: Run the following command to create a new project:
+
+```bash
+# Create an empty directory for your project
+mkdir /path/to/your/project
+
+# Enter the project directory
+cd /path/to/your/project
+
+# use yao start command to start application server
+# Use `Ctrl + C` to stop the server.
+yao start
+
+```
+
+### Step 3: Follow the Tips in the Console and Open the Browser to Set Up the Project
+
+Once you’ve completed the setup, open your browser and visit the provided URL to view the project, examine the generated code, and start making modifications.
+
+🪄 You can also use the Yao Application online generator to create a new project with AI.
+
+👉 [Yao Application Online Generator](https://hi.moapi.ai/)
+
+After generating the code, place it into your project directory, then run `yao start` to start the application server.
+
+### Step 4: Run a Process to See How Yao Works
+
+**Process** is a core concept in Yao. It represents a function that can be run directly or referenced in your code.
+
+Yao includes many internal processes that meet the needs of over 90% of applications.
+
+You can also define your own processes using TypeScript, GRPC plugins, or other methods.
+
+Open a new terminal, enter to the project directory, and run the following commands:
+
+```bash
+#
+# Run internal processes
+#
+
+# Use the utils.* process to run a utility process.
+# The process is defined in Yao’s source code.
+# You can find it in the Yao project at the following link:
+# https://github.com/YaoApp/yao/blob/840dae4b163811347598c740f43d43be065d01fa/engine/process.go#L30
+#
+
+yao run utils.app.Ping   # This will return the version of Yao.
+
+# Use the models.* process to query the database.
+# The Model DSL is defined in the models/tests/pet.mod.yao file within your project directory.
+# The first argument is the ID of the pet, and the second argument is the query.
+# If the argument is an object, use the '::' prefix to pass the object as a string.
+
+yao run models.tests.pet.Find 1 '::{}'                # Returns all fields of the pet.
+yao run models.tests.pet.Find 1 '::{"select": ["id", "name"]}' # Returns only the id and name of the pet.
+
+#
+# Run a process defined using TypeScript
+#
+
+# Use the scripts.* process to run a TypeScript process.
+# The TypeScript process is defined in the scripts/tests/hello.ts file within your project directory.
+# Command-line arguments will be passed to the TypeScript function as parameters.
+
+yao run scripts.tests.Hello 'Hello, Yao!'   # Returns 'Hello, Yao!'
+
+```
+
 ## How to Read the Documentation
+
+There are three types of documents in the Yao documentation:
+
+1. **Documentation** These documents provide an overview of Yao’s features and concepts.
+2. **Tutorials** These documents provide step-by-step instructions for building applications with Yao.
+3. **References** These documents provide detailed information about Yao DSL, processes, JSAPI, and more.
+
+### Documentation
+
+On the left side of the screen, you can find the navigation menu. The docs are organized sequentially, from basic to advanced. You can read them in order to get a better understanding of Yao.
+
+**Practice is the best way to learn.** We recommend that you follow the documentation and try to build a simple application to get started.
+
+### Tutorials
+
+The tutorials are organized by scenario, such as building a website, REST API, admin panel, enterprise app, etc.
+
+You can find the tutorials in the **[Uses](/uses)** section of the website. Each tutorial provides step-by-step instructions for building an application.
+
+👉 [Uses](/uses)
+
+Choose a tutorial based on your needs:
+
+👉 [Website](/docs/tutorials/website/getting-started)
+
+👉 [REST API](/docs/tutorials/api/getting-started)
+
+👉 [Admin Panel](/docs/tutorials/admin-panel/getting-started)
+
+👉 [CLI Application](/docs/tutorials/cli/getting-started)
+
+👉 [Enterprise Application](/docs/tutorials/enterprise/getting-started)
+
+👉 [Edge Application](/docs/tutorials/edge/getting-started)
+
+### References
+
+The references provide detailed information about Yao DSL, processes, JSAPI, and more.
+
+You can find the references at the end of the navigation menu.
+
+👉 **[CLI](references/cli)**
+
+👉 **[DSL](references/dsl)**
+
+👉 **[Processes](references/processes)**
+
+👉 **[JSAPI](references/jsapi)**
+
+👉 **[Query Param](references/query-param)**
+
+👉 **[Query DSL](references/query-dsl)**
+
+👉 **[UI Components](references/ui-components)**
+
+👉 **[Template Engine](references/template-engine)**

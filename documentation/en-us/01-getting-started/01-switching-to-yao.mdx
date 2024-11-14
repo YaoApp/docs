@@ -65,9 +65,35 @@ app
 └── ....    # Other widget types, or your self-defined widget types
 ```
 
-### What do I need to do to develop a Yao application?
+### How to develop a Yao application?
 
-## Yao can't do everything
+There are three things you need to do to develop a Yao application:
+
+1. **Write DSL**: Describe the widget in DSL, such as Model, API, Table, Form, etc.
+2. **Write Process**: Write the custom process in TypeScript or JavaScript, or use write GRPC plugins.
+3. **Debug and Run**: Use the Yao runtime to debug and run the application.
+
+`yao start` is the command to start the application server. In **development mode**, Yao watches changes to the DSL and Process files and automatically reloads the application server.
+
+`yao run` is the command to run a process. You can use it to test the process before integrating it into the application.
+
+**Visual Studio Code** is the recommended IDE for developing Yao applications. set the `.yao` file type to `jsonc` in the settings, you can get the syntax highlighting and auto-completion.
+
+For more information, see:
+
+👉 [Building Your Application](../building-your-application)
+
+## Limitations of Yao
+
+Although we have mentioned that Yao can handle everything for web development, there are still some things that may not be the best fit for Yao.
+
+- **Highly Customized UI**: If you need a highly customized UI for an admin panel or enterprise app, you might have to write custom code. However, you can utilize Yao as a backend service. 👉 [Building your component library](../using-source-code/building-your-component-library)
+
+- **Mobile App Client**: For a mobile app client, you may need to develop a native app or use a mobile app development framework, while using the Yao as a backend service. 👉 [REST API Tutorials](/docs/tutorials/api/getting-started)
+
+The SUI template engine, introduced in Yao 0.10.4, offers a fresh way to build web pages. It's still experimental and not fully developed, but it provides a new option for developers. For more advanced frontend needs, consider using frameworks like React or Vue and connect them to Yao via REST API. 👉 [Website Tutorials](/docs/tutorials/website/getting-started)
+
+TypeScript is the recommended language for writing custom processes, it will be run in the V8 engine. If high-performance is nessary, add the process in Go, it's faster than TypeScript. 👉 [Adding your process](../using-source-code/adding-your-process)
 
 ## Tips for switching to Yao
 

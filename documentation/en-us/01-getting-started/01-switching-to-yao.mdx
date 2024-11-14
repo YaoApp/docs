@@ -211,7 +211,7 @@ function Pets(category?: string): Record<string, any> {
     wheres: [{ column: "category", value: category }],
   });
 
-  return { pets: ["dog", "cat", "fish"] };
+  return pets;
 }
 ```
 

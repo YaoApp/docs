@@ -83,6 +83,76 @@ For more information, see:
 
 👉 [Building Your Application](../building-your-application)
 
+## Tips for switching to Yao
+
+Yao is a new way of building web applications. Here are some tips to help you switch to Yao.
+
+**1. The Best Way to Learn: Practice and Read Source Code**
+
+The best way to learn is through hands-on practice. Follow the documentation to build a simple application and explore the basics.
+
+You can also read the application source code, to see how the widgets are described and how the processes are written.
+
+Here ase some repositories you can refer to:
+
+👉 [Yao Official Website](https://github.com/YaoApp/yao-website)
+
+👉 [Yao app for Xgen developing](https://github.com/YaoApp/xgen-dev-app)
+
+**2. Planning Before Starting Development**
+
+In Yao, the data model is crucial. When beginning development, it's essential to plan the data structure and relationships.
+
+When starting a new project, define the data model in the `models` directory first. Then, create the Table, Form, and API widgets based on this model.
+
+Preparing test data and creating an import process is a good practice, as it enhances development efficiency. When deploying the application, you can use this process to import demo data.
+
+You can generate test data using AI by sending the Model DSL to the AI and asking it to generate the data.
+
+👉 [Import Process Example](https://github.com/YaoApp/yao-website/blob/main/scripts/test.ts)
+
+**3. AI Generation First, Then Manual Modification**
+
+The fastest way to create a widget is by using AI to generate the DSL, which you can then manually tweak to fit your needs.
+
+For example:
+
+- Provide a Model DSL to the AI, specify your requirements, and let the AI generate a similar one. You can then adjust it as needed.
+- You can also provide both a Model DSL and a Table DSL to the AI, allowing it to generate a Table widget DSL that binds to the Model. Adjust it as necessary.
+
+The Yao Official Website repository offers a simple tool for generating DSLs, which you can use. Alternatively, you can develop your own tool for this purpose.
+
+👉 [Yao Official Website Playground](https://github.com/YaoApp/yao-website/blob/main/scripts/ai/agents/playground.ts)
+
+**4. Suggestions for Frontend Developers**
+
+Before starting development, it's helpful to have some backend knowledge:
+
+- Understand database structures and relationships.
+- Grasp the basics of REST APIs and their functionality.
+- Know TypeScript or JavaScript for writing server-side custom processes.
+
+Follow the documentation to build a simple application. Learn how to create Models, write custom processes, and develop REST APIs.
+
+👉 [Building Your Application](../building-your-application)
+
+👉 [Adding your component](../adding-your-component)
+
+**5. Suggestions for Backend Developers**
+
+Before starting development, some frontend knowledge is helpful:
+
+- TypeScript or JavaScript is crucial for writing custom processes. TypeScript is recommended.
+- Basic understanding of HTML, CSS, and JavaScript is essential for building websites.
+
+Creating an admin panel in Yao is straightforward, no frontend coding required. Use Table, Form, and API widgets to build it. It's like crafting an HTML page, but more powerful, using DSL to describe the page and processes to handle data.
+
+Follow the documentation to build a simple application and learn to use these widgets for an admin panel.
+
+👉 [Building Your Application](../building-your-application)
+
+👉 [Adding Your Process](../using-source-code/adding-your-process)
+
 ## Limitations of Yao
 
 Although we have mentioned that Yao can handle everything for web development, there are still some things that may not be the best fit for Yao.
@@ -94,16 +164,6 @@ Although we have mentioned that Yao can handle everything for web development, t
 The SUI template engine, introduced in Yao 0.10.4, offers a fresh way to build web pages. It's still experimental and not fully developed, but it provides a new option for developers. For more advanced frontend needs, consider using frameworks like React or Vue and connect them to Yao via REST API. 👉 [Website Tutorials](/docs/tutorials/website/getting-started)
 
 TypeScript is the recommended language for writing custom processes, it will be run in the V8 engine. If high-performance is nessary, add the process in Go, it's faster than TypeScript. 👉 [Adding your process](../using-source-code/adding-your-process)
-
-## Tips for switching to Yao
-
-### Planning Before Starting Development
-
-### AI Generation First, Then Manual Modification
-
-### Suggestions for Frontend Developers
-
-### Suggestions for Backend Developers
 
 ## Concepts Explained
 

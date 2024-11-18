@@ -302,3 +302,173 @@ In this case, the sqlite database file will be created in the `db` directory of 
 If you want to use a different database engine, you can modify the environment configuration. 👉 **[App configuration](app-configuration)**
 
 You can use a database management tool to check the database tables, such as DB Browser for SQLite, DBeaver, or any other tool you prefer.
+
+## Step 5: Prepare Test Data (Optional)
+
+Preparing test data and setting up a custom process for importing it is a good practice to enhance development efficiency.
+
+After creating the database tables, you can generate test data for each table based on the Model DSLs.
+
+Send the Model DSLs to an AI chatbot and ask for help in generating test data for each table. Then, use the `yao run` command to execute the models.\* internal processes to import the test data.
+
+**💬 Prompts for Generating Test Data**
+
+_This is an example of a conversation with an AI chatbot to generate Model DSL for a pet store application. Change the prompts according to your requirements._
+
+```yaml
+Model DSLs:
+[Model DSLs]
+
+- I have created the database tables based on the Model DSLs.
+- I need help generating test data for each table.
+- Please provide me with the test data for each table.
+- I will use the **yao run** command to import the test data.
+- The command is **yao run models.<WIDGET_ID>.Insert '::["field_name_1","field_name_2",...]'  '::[[field_1_value, field_2_value, ...],[field_1_value, field_2_value, ...]]'**.
+- The "::" is used to pass the JSON string as an argument.
+- The WIDGET_ID is the widget ID of the model. it's named from the Table name in the Model DSL. table name pet_categories with widget ID pet.categories  table name pets with widget ID pets
+- DO NOT INCLUDE the ID field in the test data.
+- BE CAREFUL the FOREIGN KEY fields SHOULD be valid.
+- EACH TABLE SHOULD have at least 3 records.
+```
+
+**🤖 _Reply from AI Chatbot_**
+
+The AI chatbot will generate the test data, and the reply will look like this:
+
+```bash
+# Pet Categories
+yao run models.pet.categories.Insert '::["category_name","description"]' '::[
+  ["Dogs", "Domesticated carnivorous mammals that typically have a long snout and barking voice."],
+  ["Cats", "Small domesticated carnivorous mammals with soft fur and retractable claws."],
+  ["Birds", "Warm-blooded egg-laying vertebrates characterized by feathers and wings."]
+]'
+
+# pets
+yao run models.pets.Insert '::["pet_name","category_id","age","breed","description"]' '::[
+  ["Buddy", 1, 3, "Golden Retriever", "Friendly and energetic dog."],
+  ["Whiskers", 2, 2, "Siamese", "Curious and playful cat."],
+  ["Tweety", 3, 1, "Canary", "Bright yellow songbird."]
+]'
+
+# ....
+```
+
+**📺 Import Test Data**
+
+After generating the test data, you can use the `yao run` command to import the test data into the database tables.
+
+`yao run` command is used to execute a single process. This is useful for debugging custom processes.You can find how to use it in the 👉 **[Debug Guide](debug-guide#run-a-process)**
+
+Copy the generated `yao run` commands and paste them into the terminal to execute.
+
+```bash
+# Enter the project root directory,
+# If multiple projects in your machine, ensure you are in the correct project directory.
+cd /path/to/your/project
+
+# Run the yao run command to import the test data
+yao run models.pets.Insert '::["pet_name","category_id","age","breed","description"]' '::[
+  ["Buddy", 1, 3, "Golden Retriever", "Friendly and energetic dog."],
+  ["Whiskers", 2, 2, "Siamese", "Curious and playful cat."],
+  ["Tweety", 3, 1, "Canary", "Bright yellow songbird."]
+]'
+# ....
+```
+
+The correct output should look like this:
+
+```bash
+Run: models.pet.categories.Insert
+args[0]: ["category_name","description"]
+args[1]: [
+  ["Dogs", "Domesticated carnivorous mammals that typically have a long snout and barking voice."],
+  ["Cats", "Small domesticated carnivorous mammals with soft fur and retractable claws."],
+  ["Birds", "Warm-blooded egg-laying vertebrates characterized by feathers and wings."]
+]
+--------------------------------------
+models.pet.categories.Insert Response
+--------------------------------------
+null
+--------------------------------------
+✨DONE✨
+```
+
+if there are any errors, report them to the AI chatbot for help, update the test data as needed, and repeat until successful.
+
+**✅ Check Imported Data**
+
+After importing the test data, you can use `yao run` to query the data and check if it was imported correctly. Of course, you can also use a database management tool to check the data.
+
+```bash
+# Enter the project root directory,
+# If multiple projects in your machine, ensure you are in the correct project directory.
+cd /path/to/your/project
+
+# Run the yao run command to query the data
+yao run models.pets.Get '::{}'
+```
+
+The correct output should look like this:
+
+```bash
+Run: models.pets.Get
+args[0]: {}
+--------------------------------------
+models.pets.Get Response
+--------------------------------------
+[
+    {
+        "age": 3,
+        "breed": "Golden Retriever",
+        "category_id": 1,
+        "created_at": "2024-11-18 10:39:51",
+        "description": "Friendly and energetic dog.",
+        "id": 1,
+        "pet_name": "Buddy",
+        "updated_at": null
+    },
+    {
+        "age": 2,
+        "breed": "Siamese",
+        "category_id": 2,
+        "created_at": "2024-11-18 10:39:51",
+        "description": "Curious and playful cat.",
+        "id": 2,
+        "pet_name": "Whiskers",
+        "updated_at": null
+    },
+    {
+        "age": 1,
+        "breed": "Canary",
+        "category_id": 3,
+        "created_at": "2024-11-18 10:39:51",
+        "description": "Bright yellow songbird.",
+        "id": 3,
+        "pet_name": "Tweety",
+        "updated_at": null
+    }
+]
+--------------------------------------
+✨DONE✨
+```
+
+## 🎉 Congratulations
+
+You've successfully created the data model for your pet store application. This includes demonstrating Yao's basic operations: creating database tables, importing test data, and querying data.
+
+Next, you'll learn how to develop RESTful APIs to expose data.
+
+- 🟢 **Create and manage data in your application.**
+- ⚪ Develop RESTful APIs to expose data. 👉 [REST API](rest-api)
+- ⚪ Design web pages to display data. 👉 [Web Page](web-page)
+- ⚪ Build an admin panel to help administrators of the pet store manage data. 👉 [Admin Panel](admin-panel)
+- ⚪ Create backend commands for task scheduling. 👉 [CLI](cli)
+- ⚪ Integrate AI for chatbots, image generation, and enhanced user input. 👉 [AI Integration](ai-integration)
+
+For more on the data model, check out the 👉 **[DSL References](references/dsl)**
+
+In this section, everything can be generated by an AI chatbot. You can create an AI agent or tool for automatic generation using natural language. If you're interested in building such a tool, see the following resources:
+
+👉 [Yao Playground](https://github.com/YaoApp/playground)
+
+👉 [Yao Application Generator](https://mopai.ai)

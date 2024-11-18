@@ -29,6 +29,8 @@ Data models are blueprints for defining the structure of your data and are the m
 
 In Yao, the Data Model is a widget that uses Model DSL to describe your data's structure, similar to a database schema. Understanding database structures and relationships will help you design your data model effectively.
 
+The data will be stored in a database. By default, Yao uses SQLite as the database engine. You can change the database engine to MySQL or other databases by modifying the environment configuration. 👉 **[App configuration](app-configuration)**
+
 For more details about Model DSL, see 👉 **[DSL References](references/dsl)**
 
 ## Step 1: Plan Your Data Structure
@@ -185,4 +187,36 @@ Adding more prompts helps generate better Model DSLs. The more information you p
 
 For example, describe your business to the AI chatbot, and it will generate more tailored Model DSLs for you.
 
+You can also establish some coding standards to facilitate future development and maintenance work.
+
 ## Step 3: Save Model DSLs
+
+_Before proceeding, ensure you've reviewed the previous documentation to understand the Yao application's directory structure and have created a Yao application using the Quick Start Guide._
+
+👉 [Quickstart](../getting-started#quickstart)
+
+👉 [Yao Application](../getting-started/switching-to-yao#yao-application)
+
+**💾 Save to Models Directory**
+
+After generating the Model DSLs, save only the **JSON partials** in the `models` directory of your Yao application. Ensure the file names are in **lowercase** and have a `.mod.yao` extension. You can further organize them using subdirectories.
+
+For example:
+
+- Save the `pets` Model DSL as `models/pets.mod.yao`, with a widget ID of `pets`.
+- Save the `pet_categories` Model DSL as `models/pet/categories.mod.yao`, with a widget ID of `pet.categories`.
+
+The **Widget ID** is crucial for process references, replacing the `/` with a `.`. for example, `models.pet.Find` or `models.pet.categories.Find`.
+
+After saving, the models directory should look like this:
+
+```bash
+└── models
+    ├── goods.mod.yao
+    ├── pet
+    │   └── categories.mod.yao
+    ├── pets.mod.yao
+    └── transactions.mod.yao
+```
+
+You can find them in the Demo Application repository. 👉 [Demo Application](https://github.com/YaoApp/demo/tree/main/models)

@@ -240,3 +240,65 @@ For example:
 
 - the `pet_categories` table saved at `models/pet/categories.mod.yao` will have a widget ID of `pet.categories`.
 - the `pets` table saved at `models/pets.mod.yao` will have a widget ID of `pets`.
+
+## Step 4: Create Database Tables
+
+Once you've saved the Model DSLs, you can create the database tables based on the Model DSLs using the `yao migrate` command.
+
+**📺 Yao Migrate Command**
+
+**Enter the project root directory** and run the `yao migrate` command. This will create the database tables based on the Model DSLs located in the `models` directory.
+
+If you've already done this and need to reset the database, you can run `yao migrate` with the `--reset` flag.
+
+`yao migrate` command is intended for development and testing environments only. If you need to use it in a production environment, you must include the `--force` flag to execute it. **This is a dangerous operation, so proceed with caution.**
+
+You can switch between development and production modes by setting the `YAO_ENV` environment variable. For more details, refer to the 👉 **[App configuration](app-configuration)**
+
+```bash
+# Enter the project root directory,
+# If multiple projects in your machine, ensure you are in the correct project directory.
+cd /path/to/your/project
+
+# Migration all models at once
+# Create database tables based on Model DSLs. if the tables already exist, it will be altered.
+yao migrate
+
+# Migration all models at once with the --reset flag
+# Reset the database tables. This will drop the existing tables and recreate them.
+yao migrate --reset
+
+# Migration one model at a time
+# Create database table based on the Model DSL of a specific model.
+# The argument is the widget ID of the model. eg: pets, pet.categories
+yao migrate --name pets
+
+# Migration one model at a time with the --reset flag
+# Reset the database table of a specific model.
+# The argument is the widget ID of the model. eg: pets, pet.categories
+yao migrate --name pets --reset
+
+# For production environment, use the --force flag.
+yao migrate --force
+```
+
+After running the `yao migrate` command, check the results in the terminal.
+
+_AI can occasionally make mistakes, If there are any errors, report them to the AI chatbot for help, update the Model DSLs as needed, and repeat until successful._
+
+The correct output should look like this:
+
+```bash
+Update schema model: goods (goods)      SUCCESS
+Update schema model: pet.categories (pet_categories)    SUCCESS
+Update schema model: pets (pets)        SUCCESS
+Update schema model: transactions (transactions)        SUCCESS
+```
+
+**✅ Check the Database Tables**
+
+In this case, the sqlite database file will be created in the `db` directory of your Yao application after successfully running.
+
+If you want to use a different database engine, you can modify the environment configuration. 👉 **[App configuration](app-configuration)**
+
+You can use a database management tool to check the database tables, such as DB Browser for SQLite, DBeaver, or any other tool you prefer.

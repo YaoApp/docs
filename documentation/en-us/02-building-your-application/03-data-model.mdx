@@ -1,0 +1,188 @@
+---
+title: Data Model
+description: Data models are blueprint for defining the structure of your data. it's the most important part of your application.
+related:
+  title: Next Steps
+  description: Create RESTful APIs, using data models.
+  links:
+    - rest-api
+---
+
+Starting from this section, we'll build a simple pet store application together, demonstrating how to use Yao effectively. You will learn how to:
+
+- 🔵 **Create and manage data in your application.**
+- ⚪ Develop RESTful APIs to expose data. 👉 [REST API](rest-api)
+- ⚪ Design web pages to display data. 👉 [Web Page](web-page)
+- ⚪ Build an admin panel to help administrators of the pet store manage data. 👉 [Admin Panel](admin-panel)
+- ⚪ Create backend commands for task scheduling. 👉 [CLI](cli)
+- ⚪ Integrate AI for chatbots, image generation, and enhanced user input. 👉 [AI Integration](ai-integration)
+
+Ensure you have read the previous documentation, to understand the basic concepts of Yao.
+
+👉 [Building Your Application](../building-your-application)
+
+👉 [Switching to Yao](../getting-started/switching-to-yao)
+
+## Data Model Overview
+
+Data models are blueprints for defining the structure of your data and are the most important part of a Yao application.
+
+In Yao, the Data Model is a widget that uses Model DSL to describe your data's structure, similar to a database schema. Understanding database structures and relationships will help you design your data model effectively.
+
+For more details about Model DSL, see 👉 **[DSL References](references/dsl)**
+
+## Step 1: Plan Your Data Structure
+
+Before creating a data model, you should plan the structure of your data. The best way is to let an AI chatbot assist you.
+
+**Open an AI Chatbot and ask for help to generate data structure for your application.**
+
+**💬 Prompts for planning data structure**
+
+_This is an example of a conversation with an AI chatbot to plan the data structure for a pet store application. Change the prompts according to your requirements._
+
+````yaml
+- I want to create a pet store application.
+- The functionality includes adding, updating, and deleting pets, pet's categories and goods in the store.
+- Help me design the data structure, Please provide me with a list of data tables and their fields.
+- Reply to me with the table name, field name, and field type for each table.
+- Table and field names should be in snake_case, Auto-increment fields should be named as `id`, wrapped in code blocks.
+- For example:
+```plaintext
+Table: pet_categories
+    - id: INT PRIMARY KEY AUTO_INCREMENT
+    - category_name: VARCHAR(255) NOT NULL
+    - description: TEXT
+```
+````
+
+**🤖 _Reply from AI Chatbot_**
+
+```plaintext
+Table: pet_categories
+    - id: INT PRIMARY KEY AUTO_INCREMENT
+    - category_name: VARCHAR(255) NOT NULL
+    - description: TEXT
+
+Table: pets
+    - id: INT PRIMARY KEY AUTO_INCREMENT
+    - pet_name: VARCHAR(255) NOT NULL
+    - category_id: INT NOT NULL
+    - age: INT
+    - breed: VARCHAR(255)
+    - description: TEXT
+    - FOREIGN KEY (category_id) REFERENCES pet_categories(id)
+
+Table: goods
+    - id: INT PRIMARY KEY AUTO_INCREMENT
+    - good_name: VARCHAR(255) NOT NULL
+    - category_id: INT NOT NULL
+    - price: DECIMAL(10, 2) NOT NULL
+    - stock_quantity: INT NOT NULL
+    - description: TEXT
+    - FOREIGN KEY (category_id) REFERENCES pet_categories(id)
+
+Table: transactions
+    - id: INT PRIMARY KEY AUTO_INCREMENT
+    - pet_id: INT
+    - good_id: INT
+    - transaction_date: DATETIME NOT NULL
+    - quantity: INT NOT NULL
+    - total_price: DECIMAL(10, 2) NOT NULL
+    - FOREIGN KEY (pet_id) REFERENCES pets(id)
+    - FOREIGN KEY (good_id) REFERENCES goods(id)
+
+Explanation:
+    pet_categories: This table stores the various categories of pets and goods available in the store.
+    pets: This table keeps track of the pets available in the store, including their name, age, breed, and category.
+    goods: This table records the goods available for purchase, including their name, price, stock quantity, and associated category.
+    transactions: This table logs transactions involving pets and goods, including the date, quantity, and total price.
+```
+
+## Step 2: Generate Model DSL
+
+With your data structure planned, you can now generate the Model DSL for your application.
+
+Send your data structure and one or more existing Model DSL examples to the chatbot, and ask for help in generating similar Model DSLs.
+
+You can get the existing Model DSL examples from the Yao documentation or other public repositories. in this case, we will use the article model from the Yao website repository.
+
+👉 [Article Model DSL](https://github.com/YaoApp/yao-website/blob/main/models/article.mod.yao)
+
+**💬 Prompts for Generating Model DSL**
+
+_This is an example of a conversation with an AI chatbot to generate Model DSL for a pet store application. Change the prompts according to your requirements._
+
+```yaml
+Model DSL Samples:
+[Model DSL Samples]
+
+Structure Planned:
+[Structure Planned (The response from the AI chatbot in the previous step)]
+
+- According to the planned structure, I need help generating Model DSL for the pet store application.
+- Please provide me the Model DSL like the example provided.
+- Each Model DSL should be wrapped in a code block.
+```
+
+**🤖 _Reply from AI Chatbot_**
+
+The AI chatbot will generate the Model DSL for each table based on the provided structure.
+
+It looks like this:
+
+```json
+// Model DSL for pet_categories
+{
+  "name": "PetCategory",
+  "table": { "name": "pet_categories", "comment": "Pet Categories" },
+  "columns": [
+    { "name": "id", "comment": "ID", "type": "ID", "label": "ID" },
+    {
+      "label": "Category Name",
+      "name": "category_name",
+      "comment": "Name of the pet category",
+      "type": "string",
+      "length": 255,
+      "nullable": false
+    },
+    {
+      "label": "Description",
+      "name": "description",
+      "comment": "Description of the pet category",
+      "type": "text",
+      "nullable": true
+    }
+  ],
+  "option": { "timestamps": true }
+}
+// ....
+```
+
+**📝 Notes:**
+
+You can improve the prompts and Generate Model DSL directly. In this example, steps are separated for better understanding.
+
+**💬 Prompts for Generating Model DSL Directly**
+
+Following the next prompts, you can generate Model DSL directly.
+
+```yaml
+Model DSL Samples:
+[Model DSL Samples]
+
+- I want to create a pet store application.
+- The functionality includes adding, updating, and deleting pets, pet's categories and goods in the store.
+- Help me design the data structure for the pet store application.
+- According to the planned structure, I need help generating Model DSL for the pet store application.
+- Please provide me the Model DSL like the example provided.
+- Each Model DSL should be wrapped in a code block.
+```
+
+**🪄 Add More Promts**
+
+Adding more prompts helps generate better Model DSLs. The more information you provide, the better the AI chatbot can understand your needs.
+
+For example, describe your business to the AI chatbot, and it will generate more tailored Model DSLs for you.
+
+## Step 3: Save Model DSLs

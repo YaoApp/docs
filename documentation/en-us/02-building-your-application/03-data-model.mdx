@@ -23,7 +23,7 @@ Ensure you have read the previous documentation, to understand the basic concept
 
 👉 [Switching to Yao](../getting-started/switching-to-yao)
 
-## Data Model Overview
+## Overview
 
 Data models are blueprints for defining the structure of your data and are the most important part of a Yao application.
 
@@ -199,7 +199,7 @@ _Before proceeding, ensure you've reviewed the previous documentation to underst
 
 **💾 Save to Models Directory**
 
-After generating the Model DSLs, save only the **JSON partials** in the `models` directory of your Yao application. Ensure the file names are in **lowercase** and have a `.mod.yao` extension. You can further organize them using subdirectories.
+After generating the Model DSLs, save only the **JSON partials** in the `models` directory of your Yao application. Ensure the file and directory names are in **lowercase** and have a `.mod.yao` extension. You can further organize them using subdirectories.
 
 For example:
 
@@ -220,3 +220,23 @@ After saving, the models directory should look like this:
 ```
 
 You can find them in the Demo Application repository. 👉 [Demo Application](https://github.com/YaoApp/demo/tree/main/models)
+
+**📝 Notes:**
+
+For maintaining the Model DSLs, it recommended keeping the Model DSLs names consistent with the table names. This will help you easily identify the Model DSLs for each table.
+
+The table name defined in the Model DSL, it should be in **snake_case**, and the Field name should be in **snake_case** too.
+
+For example:
+
+```json
+{
+  "name": "Pet Categories",
+  // The table name is the name of the table in the database
+  "table": { "name": "pet_categories", "comment": "Pet Categories" },
+  "columns": [{ "name": "id", "comment": "ID", "type": "ID", "label": "ID" }]
+}
+```
+
+- the `pet_categories` table saved at `models/pet/categories.mod.yao` will have a widget ID of `pet.categories`.
+- the `pets` table saved at `models/pets.mod.yao` will have a widget ID of `pets`.

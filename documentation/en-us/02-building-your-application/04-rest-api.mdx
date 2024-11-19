@@ -162,7 +162,7 @@ After generating the API DSLs, save only the **JSON partials** in the `apis` dir
 
 Yao matches API DSLs using the filesystem route. The paths specified in an API DSL are relative to the root path of its DSL file, and each should begin with `/api`.
 
-Ensure that the paths are in lowercase and align with the corresponding process arguments.
+Ensure that the paths are in lowercase and the paths.in match the process arguments.
 
 For example:
 
@@ -190,7 +190,7 @@ For example:
       // The internal processes can be found in Process Reference.
       "process": "models.pet.categories.Paginate",
 
-      // Query parameters matching the process arguments // check the REST API tutorial for more details.
+      // Query parameters matching the process arguments, check the REST API tutorial for more details.
       "in": [":query-param", "$query.page", "$query.pagesize"],
 
       // The response data format. check the REST API tutorial for more details.
@@ -210,11 +210,130 @@ After saving, the apis directory should look like this:
 │   ├── v1
 │   │   └── pet.http.yao
 │   └── v1.http.yao
-
 ```
 
 ## Step 3: Test API Endpoints
 
+After saving the API DSLs, use the `yao start` command to start build-in http server and test the API endpoints.
+
+**📺 Start the HTTP server**
+
+Open a terminal window, enter the project directory and run the following command:
+
+```bash
+# Enter the project root directory,
+# If multiple projects in your machine, ensure you are in the correct project directory.
+cd /path/to/your/project
+
+# Start the HTTP server
+yao start
+```
+
+The correct output should look like this:
+
+```bash
+--------------------------------------------
+Demo Application 0.10.4 development
+--------------------------------------------
+Root  /Users/max/Yao/demo
+Runtime  standard
+Data  /Users/max/Yao/demo/data
+Listening  0.0.0.0:5099
+
+http://127.0.0.1:5099
+--------------------------
+Frontend  http://127.0.0.1:5099
+Dashboard  http://127.0.0.1:5099/admin/login/admin
+API  http://127.0.0.1:5099/api
+
+# ...
+---------------------------------
+API List
+---------------------------------
+
+widgets.form(10)
+GET /api/__yao/form/:id/setting         process: yao.form.Setting
+GET /api/__yao/form/:id/find/:primary   process: yao.form.Find
+# ...
+# The APIs added in the previous steps should be listed here.
+# ---------------
+v1.pet(1)
+GET /api/v1/pet/categories      process: models.pet.categories.Paginate
+
+v1(2)
+GET /api/v1/pets        process: models.pets.Paginate
+GET /api/v1/pets/:id    process: models.pets.Find
+# ---------------
+#...
+```
+
+If the API list is empty, verify that the `YAO_ENV` environment variable is set to `development` and that the `apis` directory contains the API DSLs. Additionally, if you encounter setup tips, ensure the `app.yao` file is present in your project's root directory. For more details, see the **[App Configuration](app-configuration)** section.
+
+**📺 Test the Endpoints**
+
+Ensure the HTTP server is running so that we can test the API endpoints. You can use the `yao run` command to execute the `http.Get` process. Alternatively, you can use any HTTP client like Postman, Insomnia, or cURL.
+
+Open a **new terminal window** and run the following command:
+
+```bash
+# Enter the project root directory
+cd /path/to/your/project
+
+#
+# Test the API endpoints
+# In this example, the server is running on 127.0.0.1:5099
+# you can replace it with your server IP and port.
+# The IP and port are displayed in the console output when you start the HTTP server.
+#
+yao run http.Get http://127.0.0.1:5099/api/v1/pets
+yao run http.Get http://127.0.0.1:5099/api/v1/pets '::{"page":1,"pagesize":1}'
+yao run http.Get http://127.0.0.1:5099/api/v1/pets/1
+yao run http.Get http://127.0.0.1:5099/api/v1/pet/categories
+```
+
+The correct output should look like this:
+
+```bash
+# yao run http.Get http://127.0.0.1:5099/api/v1/pets/1
+Run: http.Get
+args[0]: http://127.0.0.1:5099/api/v1/pets/1
+--------------------------------------
+http.Get Response
+--------------------------------------
+{
+    "code": 200,
+    "data": {
+        "age": 3,
+        "breed": "Golden Retriever",
+        "category_id": 1,
+        "created_at": "2024-11-18 10:39:51",
+        "description": "Friendly and energetic dog.",
+        "id": 1,
+        "pet_name": "Buddy",
+        "updated_at": null
+    },
+    "headers": {
+        "Content-Length": [
+            "175"
+        ],
+        "Content-Type": [
+            "application/json"
+        ],
+        "Date": [
+            "Tue, 19 Nov 2024 08:46:02 GMT"
+        ]
+    },
+    "message": "",
+    "status": 200
+}
+--------------------------------------
+✨DONE✨
+```
+
 ## Step 4: Custom Process (Optional)
 
 ## 🎉 Congratulations
+
+```
+
+```

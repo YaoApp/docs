@@ -162,7 +162,7 @@ After generating the API DSLs, save only the **JSON partials** in the `apis` dir
 
 Yao matches API DSLs using the filesystem route. The paths specified in an API DSL are relative to the root path of its DSL file, and each should begin with `/api`.
 
-Ensure that the paths are in lowercase and align with the corresponding models and process arguments.
+Ensure that the paths are in lowercase and align with the corresponding process arguments.
 
 For example:
 
@@ -170,7 +170,7 @@ For example:
 - `apis/v1/pet.http.yao`: The root router will match the path `/api/v1/pet`.
 
 ```json
-//  /apis/v1/pet.http.yao
+// /apis/v1/pet.http.yao
 // The root path is /api/v1
 {
   "name": "Pet Store Categories API",
@@ -181,11 +181,23 @@ For example:
       // is relative to the root path, /v1
       // the full path is /api/v1/categories
       "path": "/categories",
+
+      // Which HTTP method to use. GET, POST, PUT, DELETE, etc.
       "method": "GET",
+
+      // Use the internal process to retrieve categories.
+      // Theres hundreds of internal processes available in Yao, you can also create your own processes.
+      // The internal processes can be found in Process Reference.
       "process": "models.pet.categories.Paginate",
-      "guard": "-",
+
+      // Query parameters matching the process arguments // check the REST API tutorial for more details.
       "in": [":query-param", "$query.page", "$query.pagesize"],
-      "out": { "status": 200, "type": "application/json" }
+
+      // The response data format. check the REST API tutorial for more details.
+      "out": { "status": 200, "type": "application/json" },
+
+      // Guard for checking the request's permission. check the REST API tutorial for more details.
+      "guard": "-"
     }
   ]
 }

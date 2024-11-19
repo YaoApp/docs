@@ -332,8 +332,187 @@ http.Get Response
 
 ## Step 4: Custom Process (Optional)
 
+Beyond CRUD operations, custom processes are often needed for complex tasks.
+
+Here, we'll use TypeScript to create a process that fetches pets by category and returns category filter options.
+
+Scripts in Yao, saved in the `scripts` directory, are used to define custom processes. These scripts can be executed using the `yao run` command or referenced in DSLs. It runs on the server side and outputs the result in the terminal.
+
+**💾 Create Script in Scripts Directory**
+
+Create a `pet.ts` script file in the `scripts` directory. Ensure the file and directory names are in **lowercase** and have a `.ts` extension.
+
+The Source Code and Explanation:
+
+```typescript
+import { Process, log } from "@yao/runtime";
+
+type Option = { label: string; value: number | string };
+
+/**
+ * Get pet categories and return as options for select input.
+ */
+function FetchCategoryOptions(): Option[] {
+  // The Process function, provided by the Yao Runtime, executes processes and returns results.
+  // It's similar to the 'yao run' command.
+  // You can also use FS, HTTP, and other Yao Runtime APIs.
+  // For more details, see the Runtime References.
+  const categories = Process("models.pet.categories.Get", {
+    select: ["id", "category_name"],
+    limit: 100,
+  });
+
+  // console.log used to output information to the terminal.
+  // Because the script runs on the server side, the console output appears in the terminal, not in the browser.
+  console.log(categories);
+
+  // log.Info used to output information to the terminal.
+  log.Info("Categories: %s", JSON.stringify(categories));
+
+  // Return the categories as options for select input.
+  return categories.map(
+    (category) =>
+      ({ label: category.category_name, value: category.id } as Option)
+  );
+}
+```
+
+After saving, the scripts directory should look like this:
+
+```bash
+├── scripts
+│   └── pet.ts
+```
+
+If you encounter import errors in your IDE, check the `tsconfig.json` in project root directory. Set up the development environment and add the necessary vscode extensions to resolve them.
+
+👉 **[Visual Studio Code Extensions](../building-your-application#visual-studio-code-extensions)**
+
+**📺 Testing Custom Process**
+
+Execute the custom process using the `yao run` command.
+
+The process ID is constructed from the file path relative to the `scripts` directory. To form the ID, eliminate the `.ts` extension and replace `/` with `.`. Each function within the script is treated as a separate process.
+
+For instance:
+
+- The file `scripts/pet.ts` offers a series of processes under `scripts.pet.*`.
+- The file `scripts/pet/foo.ts` offers a series of processes under `scripts.pet.foo.*`.
+
+In this particular example, the process ID is `scripts.pet.fetchCategoryOptions`.
+
+```bash
+# Enter the project root directory
+# If multiple projects in your machine, ensure you are in the correct project directory.
+cd /path/to/your/project
+
+yao run scripts.pet.FetchCategoryOptions
+```
+
+The correct output should look like this:
+
+```bash
+Run: scripts.pet.FetchCategoryOptions
+[
+    {
+        "category_name": "Dogs",
+        "id": 1
+    },
+    {
+        "category_name": "Cats",
+        "id": 2
+    },
+    {
+        "category_name": "Birds",
+        "id": 3
+    }
+]
+--------------------------------------
+scripts.pet.FetchCategoryOptions Response
+--------------------------------------
+[
+    {
+        "label": "Dogs",
+        "value": 1
+    },
+    {
+        "label": "Cats",
+        "value": 2
+    },
+    {
+        "label": "Birds",
+        "value": 3
+    }
+]
+--------------------------------------
+✨DONE✨
+```
+
+**💾 Add Endpoint to API DSL**
+
+To expose the custom process, add a new endpoint to the API DSL by updating the `apis/v1/pet.http.yao` DSL file. Upon saving the file, the HTTP server will reload automatically in development mode.
+
+**Note for Windows developers:** There is a known bug with the Windows WSL environment where the server does not reload automatically if the project path is mounted in WSL. You can manually stop the server using `Ctrl+C` and restart it. This bug is slated to be resolved in a future update.
+
+```json
+{
+  "name": "Pet Store Categories API",
+  "version": "1.0.0",
+  "description": "API to manage pet categories",
+  "paths": [
+    {
+      "path": "/categories",
+      "method": "GET",
+      "process": "models.pet.categories.Paginate",
+      "guard": "-",
+      "in": [":query-param", "$query.page", "$query.pagesize"],
+      "out": { "status": 200, "type": "application/json" }
+    },
+
+    // Add a new endpoint to fetch category options
+    {
+      "path": "/categories/options",
+      "method": "GET",
+      "process": "scripts.pet.FetchCategoryOptions",
+      "guard": "-",
+      "in": [],
+      "out": { "status": 200, "type": "application/json" }
+    }
+  ]
+}
+```
+
+Test it using the `yao run` command:
+
+```bash
+yao run http.Get http://127.0.0.1:5099/api/v1/pet/categories/options
+```
+
 ## 🎉 Congratulations
 
-```
+You have successfully developed RESTful APIs to expose pet store data. Additionally, you have learned to create custom processes that fetch pets by category and provide category filter options. Moreover, you have explored how to collaborate with an AI to develop RESTful APIs using Yao.
 
-```
+If you're a front-end developer, you can accomplish what the back-end developer has achieved. If you're a back-end developer, you'll find that developing with Yao is straightforward and efficient.
+
+Next, you will learn how to design web pages to display data.
+
+- 🟢 Create and manage data in your application. 👉 [Data Model](data-model)
+- 🟢 **Develop RESTful APIs to expose data.**
+- 🔵 Design web pages to display data. 👉 [Web Page](web-page)
+- ⚪ Build an admin panel to help administrators of the pet store manage data. 👉 [Admin Panel](admin-panel)
+- ⚪ Create backend commands for task scheduling. 👉 [CLI](cli)
+- ⚪ Integrate AI for chatbots, image generation, and enhanced user input. 👉 [AI Integration](ai-integration)
+
+For more details about API DSL, see:
+
+👉 **[REST API Tutorials](/docs/tutorials/api/getting-started)**
+
+👉 **[DSL References](references/dsl)**
+
+👉 **[Process References](references/process)**
+
+In fact, you can automate all of the steps mentioned above using the Yao Application Generator. For more information, refer to the following resources:
+
+👉 [Yao Playground](https://github.com/YaoApp/playground)
+
+👉 [Yao Application Generator](https://mopai.ai)

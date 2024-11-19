@@ -1,0 +1,208 @@
+---
+title: RESTFul API
+description: Create RESTful APIs to expose data.
+related:
+  title: Next Steps
+  description: Creating web pages to display data.
+  links:
+    - web-page
+---
+
+In previous sections, you learned how to create and manage data in your application. The pet store data models are now ready. Now, you will learn how to expose this data to the world by creating RESTful APIs.
+
+- 🟢 Create and manage data in your application. 👉 [Data Model](data-model)
+- 🟠 **Develop RESTful APIs to expose data.**
+- ⚪ Design web pages to display data. 👉 [Web Page](web-page)
+- ⚪ Build an admin panel to help administrators of the pet store manage data. 👉 [Admin Panel](admin-panel)
+- ⚪ Create backend commands for task scheduling. 👉 [CLI](cli)
+- ⚪ Integrate AI for chatbots, image generation, and enhanced user input. 👉 [AI Integration](ai-integration)
+
+Ensure you have read the previous documentation, and the previous steps are completed before proceeding.
+
+👉 [Data Model](data-model)
+
+👉 [Building Your Application](../building-your-application)
+
+## Overview
+
+RESTful API is a design standard based on the REST (Representational State Transfer) architecture. It's a lightweight, stateless, resource-oriented approach for building web services. RESTful APIs use HTTP and standard methods like GET, POST, PUT, and DELETE to manage resources.
+
+In Yao, RESTful API functions as a Widget using API DSL to define endpoints stored in the `apis` directory. These endpoints operate on the built-in HTTP server.
+
+You can adjust HTTP server settings, such as the port number, in the application configuration. More details can be found here 👉 **[App Configuration](app-configuration)**.
+
+The complete REST API tutorial is available here: 👉 **[REST API Tutorial](/tutorials/api/getting-started)**
+
+For more details about API DSL, see 👉 **[DSL References](references/dsl)**
+
+## Step 1: Generate API DSL
+
+In this demo, we'll create APIs to expose pet store data for client-side applications, like mobile apps.
+
+This step demonstrates how to write prompts and generate API DSLs, which is useful for automating AI-generated applications. However, hand-writing is often quicker and more efficient in practice.
+
+We'll create three endpoints:
+
+1. `GET /pets` - Retrieve a list of pets, with optional category filtering.
+2. `GET /pets/:id` - Retrieve a pet by ID.
+3. `GET /pet/categories` - Retrieve a list of categories.
+
+Send the model IDs, process descriptions, and one or more existing API DSL examples to the chatbot, and ask for assistance in generating similar API DSLs.
+
+You can get the existing API DSL examples from the Yao documentation or other public repositories. in this case, we will use the blog api from the Yao website repository.
+
+👉 [Blog API DSL](https://github.com/YaoApp/yao-website/blob/main/apis/blog.http.yao)
+
+**💬 Prompts for Generating API DSL**
+
+_This is an example of a conversation with an AI chatbot to generate API DSLs. Change the prompts according to your requirements._
+
+```yaml
+API DSL Samples:
+[API DSL Samples]
+
+API DSL Routes explanation:
+    - The api route follows the FileSystem route.
+    - For example /apis/v1.http.yao the root should be /apis/v1, /apis/v1/pet.http.yao the root should be /apis/v1/pet.
+
+API DSL paths.path explanation:
+    - The api route should be in lowercase.
+    - the paths.path is the relative path to the root.
+    - for example /apis/v1.http.yao the root should be /apis/v1, /apis/v1/pet.http.yao the root should be /apis/v1/pet.
+    - In /apis/v1.http.yao, paths.path equals /pets, the endpoint is GET /v1/pets.
+    - In /apis/v1/pet.http.yao, paths.path equals /categories, the endpoint is GET /v1/pet/categories.
+
+API DSL paths.in explanation:
+    - "$param.<name>" - The parameter name in the path.
+    - "$query.<name>" - The querystring parameter name.
+    - ":query-param" - The QueryParam, it's always named query-param.
+
+Related Models:
+    pets, pet.categories
+
+Related Processes details:
+    models.<model>.Find [id] [QueryParam]
+    models.<model>.Paginate [QueryParam] [page] [pageSize]
+
+- I want to create a RESTful API to expose pet store data for client-side applications.
+- The paths.in shoule be matched with the related models and processes arguments. for example, models.pets.Find [id] [QueryParam], the path.in should be ["$params.id", ":query-param"].
+- The page and pageSize useing query string parameters, named page and pagesize.
+- Each API DSL should be wrapped in a code block.
+- I need three endpoints
+    - 1. `GET /pets` - Retrieve a list of pets, with optional category filtering.
+    - 2. `GET /pets/:id` - Retrieve a pet by ID.
+    - 3. `GET /pet/categories` - Retrieve a list of categories.
+- Help me generate two API DSLs for these endpoints.
+    - 1. /apis/v1.http.yao for pets,
+    - 2. /apis/v1/pet.http.yao for pet categories.
+```
+
+**🤖 _Reply from AI Chatbot_**
+
+The AI chatbot will generate the API DSLs for you. It looks like this:
+
+```json
+// /apis/v1.http.yao
+{
+  "name": "Pet Store API",
+  "version": "1.0.0",
+  "description": "API to manage pet data",
+  "paths": [
+    {
+      "path": "/pets",
+      "method": "GET",
+      "process": "models.pets.Paginate",
+      "guard": "-",
+      "in": [":query-param", "$query.page", "$query.pagesize"],
+      "out": { "status": 200, "type": "application/json" }
+    },
+    {
+      "path": "/pets/:id",
+      "method": "GET",
+      "process": "models.pets.Find",
+      "guard": "-",
+      "in": ["$param.id", ":query-param"],
+      "out": { "status": 200, "type": "application/json" }
+    }
+  ]
+}
+
+
+// /apis/v1/pet.http.yao
+{
+  "name": "Pet Store Categories API",
+  "version": "1.0.0",
+  "description": "API to manage pet categories",
+  "paths": [
+    {
+      "path": "/categories",
+      "method": "GET",
+      "process": "models.pet.categories.Paginate",
+      "guard": "-",
+      "in": [":query-param", "$query.page", "$query.pagesize"],
+      "out": { "status": 200, "type": "application/json" }
+    }
+  ]
+}
+
+//...
+```
+
+## Step 2: Save API DSLs
+
+Before proceeding, ensure you've reviewed the previous documentation to understand the Yao application's directory structure and have created a Yao application using the Quick Start Guide.
+
+👉 [Quickstart](../getting-started#quickstart)
+
+👉 [Yao Application](../getting-started/switching-to-yao#yao-application)
+
+**💾 Save to APIs Directory**
+
+After generating the API DSLs, save only the **JSON partials** in the `apis` directory of your Yao application. Ensure the file and directory names are in **lowercase** and have a `.http.yao` extension.
+
+Yao matches API DSLs using the filesystem route. The paths specified in an API DSL are relative to the root path of its DSL file, and each should begin with `/api`.
+
+Ensure that the paths are in lowercase and align with the corresponding models and process arguments.
+
+For example:
+
+- `apis/v1.http.yao`: The root router will match the path `/api/v1`.
+- `apis/v1/pet.http.yao`: The root router will match the path `/api/v1/pet`.
+
+```json
+//  /apis/v1/pet.http.yao
+// The root path is /api/v1
+{
+  "name": "Pet Store Categories API",
+  "version": "1.0.0",
+  "description": "API to manage pet categories",
+  "paths": [
+    {
+      // is relative to the root path, /v1
+      // the full path is /api/v1/categories
+      "path": "/categories",
+      "method": "GET",
+      "process": "models.pet.categories.Paginate",
+      "guard": "-",
+      "in": [":query-param", "$query.page", "$query.pagesize"],
+      "out": { "status": 200, "type": "application/json" }
+    }
+  ]
+}
+```
+
+After saving, the apis directory should look like this:
+
+```bash
+├── apis
+│   ├── v1
+│   │   └── pet.http.yao
+│   └── v1.http.yao
+
+```
+
+## Step 3: Test API Endpoints
+
+## Step 4: Custom Process (Optional)
+
+## 🎉 Congratulations

@@ -337,12 +337,11 @@ function Pet(r: SuiRequest) {
 ```json
 // pet/index/index.json
 {
-  // The variable name with $ is a special variable, it means execute the backend script function or execute a process.
-  // The value name with @ is a special variable, it means get the data from the backend script, otherwise, it will be executed a process
-  "$pets": "@PetList",
+  // Variables prefixed with $ indicate execution of a backend script function or process.
+  // Values prefixed with @ indicate data retrieval from a backend script; otherwise, a process will be executed.
+  "$pets": "@PetList", // Excute a backend script function, Get the data
 
-  // Call the backend script function, Get the data.
-  "$ping": "utils.app.ping",
+  "$ping": "utils.app.ping", // Execute the process, Get the data
 
   // Static data
   "foo": { "hello": "world" }
@@ -352,21 +351,49 @@ function Pet(r: SuiRequest) {
 ```json
 // pet/[id]/[id].json
 {
-  "$pet": "@Pet" // Call the backend script function, Get the data
+  "$pet": "@Pet" // Excute a backend script function, Get the data
 }
 ```
 
-After creating the backend script files, the directory structure should be:
+After creating the backend script and data source files, the directory structure should be:
 
 ```bash
+├── data
+│   └── templates
+│       └── default
+│           ├── __assets
+│           │   └── style.css
+│           ├── __data.json
+│           ├── __document.html
+│           ├── index
+│           │   └── index.html
+│           └── pet
+│               ├── [id]
+│               │   ├── [id].backend.ts # New backend script file for pet details page
+│               │   ├── [id].css
+│               │   ├── [id].html
+│               │   ├── [id].json # New data source file for pet details page
+│               │   └── [id].ts
+│               └── index
+│                   ├── index.backend.ts # New backend script file for pet list page
+│                   ├── index.css
+│                   ├── index.html
+│                   ├── index.json # New data source file for pet list page
+│                   └── index.ts
+├── models
+│   ├── goods.mod.yao
+│   ├── pet
+│   │   └── categories.mod.yao
+│   ├── pets.mod.yao  # Modify the model DSL, add the relations
+│   └── transactions.mod.yao
 
 ```
 
 **📝 Notes:**
 
-In the backend script, we use the `Process` function to call the model.\* process. The `withs` option is used to join the category table and get the category name directly.
+In the backend script, use the `Process` function with the `withs` option to join the category table and directly retrieve the category name.
 
-**_We should modify the Model DSL to support the join query. It should be done when creating the model. Here demonstrates how to modify the model DSL, and maintain the application._**
+**_We should modify the Model DSL to support join queries, which ideally should have been done during the DSL file creation. It is placed here to demonstrate how to update the model DSL and maintain the application._**
 
 Open the `models/pets.mod.yao` file and modify the DSL add relations;
 

@@ -209,13 +209,13 @@ The directory structure should be:
 │                   └── index.ts
 ```
 
-## Step 3: Build the Web Page
-
-### 📺 SUI Build Command
+## Step 3: Build Web Page
 
 After saving the web pages, run the `yao sui build` command to build them. This generates `.sui` files and copies assets to the `public` directory.
 
 The built-in Yao HTTP server will recognize and serve these web pages.
+
+### 📺 SUI Build Command
 
 In a new terminal, execute the following command:
 
@@ -260,7 +260,7 @@ Current Yao versions lack automatic rewrite rules. Manually add them in `app.yao
 }
 ```
 
-**Restart the server after modifying the `app.yao` file.**
+**Restart the server after modifying the `app.yao` file.** 👉 **[App Configuration](app-configuration)**
 
 ### 🌐 Visit in Browser
 
@@ -274,6 +274,126 @@ Open your browser and visit the following URLs:
 _Replace the IP address and port with your server's IP address and port._
 
 ## Step 4: Integrate Data
+
+You've successfully created web pages using SUI. This step demonstrates how to integrate data into the web pages.
+
+### 📜 SUI Page Parts
+
+Each SUI page can include up to six parts: HTML, CSS, Frontend Script, Data, Backend Script, and Configuration. Only HTML is mandatory.
+
+| Part            | Extension   | Required | Description                                         |
+| --------------- | ----------- | -------- | --------------------------------------------------- |
+| HTML            | .html       | Yes      | Core HTML content.                                  |
+| CSS             | .css        | No       | Styles for the page.                                |
+| Frontend Script | .ts         | No       | Scripts for browser, compiled to JS.                |
+| Backend Script  | .backend.ts | No       | Server-side scripts, like custom processes.         |
+| Data            | .json       | No       | Data source, use `{{ key }}` in HTML for rendering. |
+| Configuration   | .config     | No       | Page settings, e.g., title, cache policy.           |
+
+### 💾 Data Integration
+
+We use the backend script to fetch data from the database and use the data source file to pass the data to the HTML file.
+
+The backend script runs on server-side, it same to `scripts` files. import the script in the `scripts` directory, or Yao Runtime APIs can be used in the backend script.
+
+**Backend Script File:**
+
+Create backend script files for pet list and pet details pages.
+
+```typescript
+// pet/index/index.backend.ts
+import { Process } from "@yao/runtime";
+
+function PetList() {
+  const pets = Process("models.pets.Get", {
+    select: ["id", "pet_name", "category_id"],
+    withs: { category: { query: { select: ["id", "category_name"] } } }, // Use join query get the category name directly
+  });
+  return pets;
+}
+```
+
+```typescript
+// pet/[id]/[id].backend.ts
+import { Process, SuiRequest, Exception } from "@yao/runtime";
+
+function Pet(r: SuiRequest) {
+  // Get the pet ID from the request
+  const id = r.params?.id;
+  if (!id) {
+    throw new Exception("Pet ID is required", 400);
+  }
+
+  const pets = Process("models.pets.Find", id, {
+    select: ["id", "pet_name", "category_id"],
+    withs: { category: { query: { select: ["id", "category_name"] } } }, // Use join query get the category name directly
+  });
+  return pets;
+}
+```
+
+**Data Source File:**
+
+```json
+// pet/index/index.json
+{
+  // The variable name with $ is a special variable, it means execute the backend script function or execute a process.
+  // The value name with @ is a special variable, it means get the data from the backend script, otherwise, it will be executed a process
+  "$pets": "@PetList",
+
+  // Call the backend script function, Get the data.
+  "$ping": "utils.app.ping",
+
+  // Static data
+  "foo": { "hello": "world" }
+}
+```
+
+```json
+// pet/[id]/[id].json
+{
+  "$pet": "@Pet" // Call the backend script function, Get the data
+}
+```
+
+After creating the backend script files, the directory structure should be:
+
+```bash
+
+```
+
+**📝 Notes:**
+
+In the backend script, we use the `Process` function to call the model.\* process. The `withs` option is used to join the category table and get the category name directly.
+
+**_We should modify the Model DSL to support the join query. It should be done when creating the model. Here demonstrates how to modify the model DSL, and maintain the application._**
+
+Open the `models/pets.mod.yao` file and modify the DSL add relations;
+
+```json
+// models/pets.mod.yao
+{
+  "name": "Pet",
+  "table": { "name": "pets", "comment": "Pets" },
+  "columns": [
+    //...
+  ],
+
+  // Add the relations here
+  "relations": {
+    // category: the relation name
+    "category": {
+      "type": "hasOne", // the relation type, hasOne or hasMany
+      "model": "pet.categories", // the relation model widget ID
+      "foreign": "category_id", // the foreign key in the current model
+      "key": "id" // the primary key in the related model
+    }
+  },
+  "option": { "timestamps": true }
+}
+```
+
+For more on the data model, check out the 👉 **[DSL References](references/dsl)**
 
 ## Step 5: Components (Optional)
 

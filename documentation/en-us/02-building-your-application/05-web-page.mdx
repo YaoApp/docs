@@ -29,7 +29,7 @@ Ensure you have read the previous documentation, and the previous steps are comp
 
 SUI, a new feature in Yao v0.10.4, is AI-friendly and streamlines web page creation and data integration. It supports backward compatibility, enabling developers to use HTML, CSS, and TypeScript/JavaScript while promoting code reusability with a component-based architecture.
 
-SUI requires no additional build tools and naturally supports Server-Side Rendering (SSR), enhancing SEO and making it suitable for web development.
+SUI requires no additional build tools and naturally supports Server-Side Rendering (SSR), enhancing SEO and making it suitable for website development.
 
 **_Note: SUI is a new feature and still experimental. For advanced frontend requirements, consider using frameworks like React or Vue. Place the built files in the `public` directory and connect them to Yao via REST API._**
 
@@ -38,3 +38,120 @@ Access the complete tutorials here: 👉 [Website Tutorials](/docs/tutorials/web
 If you're interested in learning why we recommend SUI, read the blog post here:
 
 👉 [Why does Yao reinvent so many wheels?](/blog/Why-does-Yao-reinvent-so-many-wheels)
+
+## Step 1: Generate Web Page
+
+In this demo, we'll create two web pages: one to list pets and another for pet details.
+
+The AI-generated web pages are suitable for a simple website, and you can further customize them by editing the generated content.
+
+This step demonstrates how to write prompts to generate web pages.
+
+**💬 Prompts for Generating Web Pages**
+
+_This is an example of a conversation with an AI chatbot to generate web pages. Change the prompts according to your requirements._
+
+````yaml
+Model Samples:
+[Model Samples]
+
+Related Models:
+    pets, pet.categories
+
+Guidelines for Generating Web Pages:
+  - Each web page should consist of separate Pure HTML, CSS, and TypeScript files. Use the same name with different extensions (e.g., index.html, index.css, index.ts).
+  - Avoid using frameworks or libraries. If necessary, import libraries via the script tag.
+  - The rendering logic will be handled by the Template Engine, so you don't need to implement it. Use the JS file for animations.
+  - For third-party libraries, include the CDN link in the JS file using `import '<CDN link>';`.
+  - HTML content should exclude the <head> and <body> tags; these are added by the SUI engine.
+  - Separate Common CSS files for consistent styling, If necessary, import them into the CSS file using `import '@assets/[name].css';`.
+  - For consistency, use the same CSS class names and IDs as the model fields.
+  - Each file should be wrapped in a code block, with the file name commented at the top.
+
+Template Engine Rules:
+  - Use `{{ variable }}` syntax for data rendering within HTML tags.
+  - Use `s:for` for looping over data lists, e.g., `<div s:for="items" s:for-item="pet"> <span>{{ pet.name }}</span> </div>`.
+  - Use `s:if` for conditional rendering, e.g., `<span s:if="pet.name">{{ pet.name }}</span>`.
+  - File system routes define web page routes. For example, `index.html` maps to '/', 'about.html' maps to '/about'.
+  - Dynamic routes are represented by `[id]`, e.g., '/pet/1', '/pet/2' is '/[id]'.
+  - Use `s:on-click` for event binding, e.g., `<button s:on-click="handleClick" s:data-id="{{ pet.id }}">Click</button>`.
+  - Implement event handlers in the TS/JS file, e.g.:
+
+    ```typescript
+    import { EventData, Component, EventDetail } from "@yao/sui";
+    const self = this as Component;
+
+    self.handleClick = (event: Event, data: EventData, detail: EventDetail) => {
+        // handle the event
+        // data['id'] corresponds to s:data-id="{{ pet.id }}"
+    };
+    ```
+
+Web Page Requirements:
+  - Use the fields in the model to generate web page content.
+  - Create two pages: 'index' to list pets and '[id]' for pet details, where 'id' is the pet's ID.
+  - Display the pet category name on the list page using the pet.categories model.
+  - Separate Common CSS file style.css for consistent styling, define the Common font, color, and spacing in the CSS file.
+  - Maintain consistent styles and implement animations and interactive JS effects.
+
+````
+
+**🤖 _Reply from AI Chatbot_**
+
+The AI chatbot will generate web pages for you, It should be like this:
+
+```html
+<!-- [id].html -->
+<div class="pet-details">
+  <h1>{{ pet.pet_name }}</h1>
+  <p>Category: {{ pet.category_name }}</p>
+  <p s:if="pet.age">Age: {{ pet.age }}</p>
+  <p s:if="pet.breed">Breed: {{ pet.breed }}</p>
+  <p s:if="pet.description">{{ pet.description }}</p>
+  <button s:on-click="goBack">Back to List</button>
+</div>
+```
+
+```css
+/* [id].css */
+@import "@assets/style.css";
+
+.pet-details {
+  padding: 24px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+```
+
+```typescript
+// [id].ts
+import { EventData, Component, EventDetail } from "@yao/sui";
+const self = this as Component;
+
+self.goBack = () => {
+  window.location.href = `/`;
+};
+```
+
+## Step 2: Save Web Page
+
+## Step 3: Integrate Data
+
+## Step 4: Test And Build
+
+## Step 5: Components (Optional)
+
+## 🎉 Congratulations

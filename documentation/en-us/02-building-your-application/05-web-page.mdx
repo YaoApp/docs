@@ -47,7 +47,7 @@ The AI-generated web pages are suitable for a simple website, and you can furthe
 
 This step demonstrates how to write prompts to generate web pages.
 
-**💬 Prompts for Generating Web Pages**
+### 💬 Prompts for Generating Web Pages
 
 _This is an example of a conversation with an AI chatbot to generate web pages. Change the prompts according to your requirements._
 
@@ -96,7 +96,7 @@ Web Page Requirements:
 
 ````
 
-**🤖 _Reply from AI Chatbot_**
+### 🤖 _Reply from AI Chatbot_
 
 The AI chatbot will generate web pages for you, It should be like this:
 
@@ -148,9 +148,132 @@ self.goBack = () => {
 
 ## Step 2: Save Web Page
 
-## Step 3: Integrate Data
+Before proceeding, ensure you've reviewed the previous documentation to understand the Yao application's directory structure and have created a Yao application using the Quick Start Guide.
 
-## Step 4: Test And Build
+👉 [Quickstart](../getting-started#quickstart)
+
+👉 [Yao Application](../getting-started/switching-to-yao#yao-application)
+
+### 📜 Directory Structure
+
+After following the Quick Start Guide, your project root should contain three directories: `data/templates/default`, `suis`, and `public`.
+
+Find out the `data/templates/default` directory structure below:
+
+```bash
+├── data
+│   └── templates
+│       └── default  # Template root directory
+│           ├── __assets  # Assets
+│           ├── __data.json  # Global dynamic data
+│           ├── __document.html  # Document template
+│           ├── index  # Home page
+│           │   └── index.html
+```
+
+For more information, refer to the directory structure documentation:
+
+👉 [Website Tutorials-Directory Structure](/docs/tutorials/website/getting-started/project-structure)
+
+### 💾 Save Web Pages
+
+SUI Page uses File System Routes for web page routing. Each page is a directory with HTML, CSS, and TypeScript files of the same name. Use `[name]` for dynamic routes in directory and file names.
+
+Examples:
+
+- `/index` maps to `TEMPLATE_ROOT/index`
+- `/pet/[id]` maps to `TEMPLATE_ROOT/pet/[id]`
+
+Save generated web pages in the `data/templates/default` directory.
+
+The directory structure should be:
+
+```bash
+├── data
+│   └── templates
+│       └── default # Template root directory
+│           ├── __assets
+│           │   └── style.css
+│           ├── __data.json
+│           ├── __document.html
+│           ├── index
+│           │   └── index.html
+│           └── pet
+│               ├── [id] # Dynamic route /pet/1, /pet/2 ...
+│               │   ├── [id].css
+│               │   ├── [id].html
+│               │   └── [id].ts
+│               └── index # Pet list page /pet
+│                   ├── index.css
+│                   ├── index.html
+│                   └── index.ts
+```
+
+## Step 3: Build the Web Page
+
+### 📺 SUI Build Command
+
+After saving the web pages, run the `yao sui build` command to build them. This generates `.sui` files and copies assets to the `public` directory.
+
+The built-in Yao HTTP server will recognize and serve these web pages.
+
+In a new terminal, execute the following command:
+
+```bash
+# `web` is the SUI widget ID found in the `suis` directory. Each application can have multiple template engine instances.
+# `default` is the template name located in the `data/templates` directory. Each engine can have multiple templates.
+yao sui build web default
+```
+
+The correct output should be:
+
+```bash
+-----------------------
+Public Root: /public/
+   Template: /templates/default
+    Session: {}
+-----------------------
+Build succeeded for production in 9ms
+```
+
+### 📜 URL Rewrite
+
+Current Yao versions lack automatic rewrite rules. Manually add them in `app.yao`. This will be fixed in a future release.
+
+```json
+{
+  "name": "Demo Application",
+  "short": "Demo",
+  "description": "Another yao application",
+  "version": "0.10.4",
+  "adminRoot": "admin",
+  "public": {
+    // Add the http server rewrite rules here
+    "rewrite": [
+      { "^\\/assets\\/(.*)$": "/assets/$1" }, //  /assets/* -> /public/assets/*
+      { "^\\/pet/index$": "/pet/index.sui" }, //  /pet/index -> /public/pet/index.sui
+      { "^\\/pet/(.*)$": "/pet/[id].sui" }, //    /pet/xxx -> /public/pet/[id].sui
+      { "^\\/(.*)$": "/$1.sui" } // Other routes, /xxx -> /xxx.sui
+    ]
+  },
+  "optional": { "remoteCache": true }
+}
+```
+
+**Restart the server after modifying the `app.yao` file.**
+
+### 🌐 Visit in Browser
+
+After building the web pages, you can view them in your browser. Before proceeding, ensure the Yao server is running.
+
+Open your browser and visit the following URLs:
+
+- [http://127.0.0.1:5099/pet/index](http://127.0.0.1:5099/pet/index) The pet list page.
+- [http://127.0.0.1:5099/pet/1](http://127.0.0.1:5099/pet/1) The pet details page.
+
+_Replace the IP address and port with your server's IP address and port._
+
+## Step 4: Integrate Data
 
 ## Step 5: Components (Optional)
 

@@ -53,7 +53,7 @@ You can get the existing API DSL examples from the Yao documentation or other pu
 
 👉 [Blog API DSL](https://github.com/YaoApp/yao-website/blob/main/apis/blog.http.yao)
 
-**💬 Prompts for Generating API DSL**
+### 💬 Prompts for Generating API DSL
 
 _This is an example of a conversation with an AI chatbot to generate API DSLs. Change the prompts according to your requirements._
 
@@ -97,7 +97,7 @@ Related Processes details:
     - 2. /apis/v1/pet.http.yao for pet categories.
 ```
 
-**🤖 _Reply from AI Chatbot_**
+### 🤖 _Reply from AI Chatbot_
 
 The AI chatbot will generate the API DSLs for you. It looks like this:
 
@@ -156,7 +156,7 @@ Before proceeding, ensure you've reviewed the previous documentation to understa
 
 👉 [Yao Application](../getting-started/switching-to-yao#yao-application)
 
-**💾 Save to APIs Directory**
+### 💾 Save to APIs Directory
 
 After generating the API DSLs, save only the **JSON partials** in the `apis` directory of your Yao application. Ensure the file and directory names are in **lowercase** and have a `.http.yao` extension.
 
@@ -216,7 +216,7 @@ After saving, the apis directory should look like this:
 
 After saving the API DSLs, use the `yao start` command to start build-in http server and test the API endpoints.
 
-**📺 Start the HTTP server**
+### 📺 Start the HTTP server
 
 Open a terminal window, enter the project directory and run the following command:
 
@@ -269,7 +269,7 @@ GET /api/v1/pets/:id    process: models.pets.Find
 
 If the API list is empty, verify that the `YAO_ENV` environment variable is set to `development` and that the `apis` directory contains the API DSLs. Additionally, if you encounter setup tips, ensure the `app.yao` file is present in your project's root directory. For more details, see the **[App Configuration](app-configuration)** section.
 
-**📺 Test the Endpoints**
+### 📺 Test the Endpoints
 
 Ensure the HTTP server is running so that we can test the API endpoints. You can use the `yao run` command to execute the `http.Get` process. Alternatively, you can use any HTTP client like Postman, Insomnia, or cURL.
 
@@ -338,7 +338,7 @@ Here, we'll use TypeScript to create a process that fetches pets by category and
 
 Scripts in Yao, saved in the `scripts` directory, are used to define custom processes. These scripts can be executed using the `yao run` command or referenced in DSLs. It runs on the server side and outputs the result in the terminal.
 
-**💾 Create Script in Scripts Directory**
+### 💾 Create Script in Scripts Directory
 
 Create a `pet.ts` script file in the `scripts` directory. Ensure the file and directory names are in **lowercase** and have a `.ts` extension.
 
@@ -388,7 +388,7 @@ If you encounter import errors in your IDE, check the `tsconfig.json` in project
 
 👉 **[Visual Studio Code Extensions](../building-your-application#visual-studio-code-extensions)**
 
-**📺 Testing Custom Process**
+### 📺 Testing Custom Process
 
 Execute the custom process using the `yao run` command.
 
@@ -448,7 +448,7 @@ scripts.pet.FetchCategoryOptions Response
 ✨DONE✨
 ```
 
-**💾 Add Endpoint to API DSL**
+### 💾 Add Endpoint to API DSL
 
 To expose the custom process, add a new endpoint to the API DSL by updating the `apis/v1/pet.http.yao` DSL file. Upon saving the file, the HTTP server will reload automatically in development mode.
 

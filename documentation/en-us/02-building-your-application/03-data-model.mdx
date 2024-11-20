@@ -39,7 +39,7 @@ Before creating a data model, you should plan the structure of your data. The be
 
 **Open an AI Chatbot and ask for help to generate data structure for your application.**
 
-**💬 Prompts for planning data structure**
+### 💬 Prompts for planning data structure
 
 _This is an example of a conversation with an AI chatbot to plan the data structure for a pet store application. Change the prompts according to your requirements._
 
@@ -58,7 +58,7 @@ Table: pet_categories
 ```
 ````
 
-**🤖 _Reply from AI Chatbot_**
+### 🤖 _Reply from AI Chatbot_
 
 ```plaintext
 Table: pet_categories
@@ -111,7 +111,7 @@ You can get the existing Model DSL examples from the Yao documentation or other 
 
 👉 [Article Model DSL](https://github.com/YaoApp/yao-website/blob/main/models/article.mod.yao)
 
-**💬 Prompts for Generating Model DSL**
+### 💬 Prompts for Generating Model DSL
 
 _This is an example of a conversation with an AI chatbot to generate Model DSL for a pet store application. Change the prompts according to your requirements._
 
@@ -127,7 +127,7 @@ Structure Planned:
 - Each Model DSL should be wrapped in a code block.
 ```
 
-**🤖 _Reply from AI Chatbot_**
+### 🤖 _Reply from AI Chatbot_
 
 The AI chatbot will generate the Model DSL for each table based on the provided structure.
 
@@ -197,7 +197,7 @@ _Before proceeding, ensure you've reviewed the previous documentation to underst
 
 👉 [Yao Application](../getting-started/switching-to-yao#yao-application)
 
-**💾 Save to Models Directory**
+### 💾 Save to Models Directory
 
 After generating the Model DSLs, save only the **JSON partials** in the `models` directory of your Yao application. Ensure the file and directory names are in **lowercase** and have a `.mod.yao` extension. You can further organize them using subdirectories.
 
@@ -245,7 +245,7 @@ For example:
 
 Once you've saved the Model DSLs, you can create the database tables based on the Model DSLs using the `yao migrate` command.
 
-**📺 Yao Migrate Command**
+### 📺 Yao Migrate Command
 
 **Enter the project root directory** and run the `yao migrate` command. This will create the database tables based on the Model DSLs located in the `models` directory.
 
@@ -295,7 +295,7 @@ Update schema model: pets (pets)        SUCCESS
 Update schema model: transactions (transactions)        SUCCESS
 ```
 
-**✅ Check the Database Tables**
+### ✅ Check the Database Tables
 
 In this case, the sqlite database file will be created in the `db` directory of your Yao application after successfully running.
 
@@ -311,7 +311,7 @@ After creating the database tables, you can generate test data for each table ba
 
 Send the Model DSLs to an AI chatbot and ask for help in generating test data for each table. Then, use the `yao run` command to execute the models.\* internal processes to import the test data.
 
-**💬 Prompts for Generating Test Data**
+### 💬 Prompts for Generating Test Data
 
 _This is an example of a conversation with an AI chatbot to generate Model DSL for a pet store application. Change the prompts according to your requirements._
 
@@ -331,7 +331,7 @@ Model DSLs:
 - EACH TABLE SHOULD have at least 3 records.
 ```
 
-**🤖 _Reply from AI Chatbot_**
+### 🤖 _Reply from AI Chatbot_
 
 The AI chatbot will generate the test data, and the reply will look like this:
 
@@ -353,7 +353,7 @@ yao run models.pets.Insert '::["pet_name","category_id","age","breed","descripti
 # ....
 ```
 
-**📺 Import Test Data**
+### 📺 Import Test Data
 
 After generating the test data, you can use the `yao run` command to import the test data into the database tables.
 
@@ -395,7 +395,7 @@ null
 
 if there are any errors, report them to the AI chatbot for help, update the test data as needed, and repeat until successful.
 
-**✅ Check Imported Data**
+### ✅ Check Imported Data
 
 After importing the test data, you can use `yao run` to query the data and check if it was imported correctly. Of course, you can also use a database management tool to check the data.
 

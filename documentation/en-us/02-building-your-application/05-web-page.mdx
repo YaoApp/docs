@@ -422,6 +422,57 @@ Open the `models/pets.mod.yao` file and modify the DSL add relations;
 
 For more on the data model, check out the 👉 **[DSL References](references/dsl)**
 
+### 📺 SUI Watch Command
+
+After saving the backend script and data source files, we need to rebuild the web pages.
+
+Use the `yao sui watch` command to watch for changes and rebuild the web pages automatically.
+
+Open a new terminal and execute the following command:
+
+```bash
+# Watch for changes and rebuild the web pages
+# `web` is the SUI widget ID found in the `suis` directory. Each application can have multiple template engine instances.
+# `default` is the template name located in the `data/templates` directory. Each engine can have multiple templates.
+yao sui watch web default
+```
+
+The correct output should be:
+
+```bash
+-----------------------
+Public Root: /public/
+   Template: /templates/default
+    Session: {}
+-----------------------
+Watching...
+Press Ctrl+C to exit
+```
+
+After executing the command, the web pages will be rebuilt automatically when changes are detected.
+
+```bash
+Building...  Success (21ms)
+Building...  Success (18ms)
+```
+
+### 🌐 Debug in Browser
+
+Before starting, ensure your Yao server is running. Then, open your browser and visit:
+
+- [http://127.0.0.1:5099/pet/index?\_\_debug](http://127.0.0.1:5099/pet/index?__debug) for the pet list.
+- [http://127.0.0.1:5099/pet/1?\_\_debug](http://127.0.0.1:5099/pet/1?__debug) for pet details.
+
+The `__debug` query string is used for debugging purposes, it ignores the page cache and data cache.
+
+Replace `127.0.0.1:5099` with your server's IP and port.
+
+Use the browser console to check data from the backend. Disable cache in developer tools to always get the latest data, which may show a warning in the terminal.
+
+```bash
+[SUI] The page /pet/index is not cached. file=/public/pet/index.sui DisableCache=true
+```
+
 ## Step 5: Components (Optional)
 
 ## 🎉 Congratulations

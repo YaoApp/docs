@@ -323,7 +323,7 @@ _Replace the IP address and port with your server's IP address and port._
 
 You've successfully created web pages using SUI. This step demonstrates how to integrate data into the web pages.
 
-### 📜 SUI Page Parts
+### 📜 SUI Page Structure
 
 Each SUI page can include up to six parts: HTML, CSS, Frontend Script, Data, Backend Script, and Configuration. Only HTML is mandatory.
 
@@ -523,4 +523,99 @@ Use the browser console to check data from the backend. Disable cache in develop
 
 ## Step 5: Components (Optional)
 
+Components are reusable parts of a web page. They can be used across multiple pages, enhancing code reusability and maintainability.
+
+In SUI, each page can be a component, can be used in other pages, use the `is` attribute to include a component in another page.
+
+In this step, we'll create header and footer components to include in the pet list and pet details pages.
+
+### 💾 Header and Footer Pages
+
+Create header and footer pages in the `data/templates/default` directory.
+
+```html
+<!-- data/templates/default/pet/header/header.html -->
+<nav>
+  <a href="/">Company Logo</a>
+  <a href="/pet/index">Pet List</a>
+  <input type="text" placeholder="Search..." />
+  <a href="/signin">Sign In</a>
+  <a href="/signup">Sign Up</a>
+</nav>
+```
+
+```html
+<!-- data/templates/default/pet/footer/footer.html -->
+<!-- 
+  Use {% %} to access component props passed down from the parent component.
+-->
+<footer>
+  <p>Company Name &copy; 2023 {% name %}</p>
+</footer>
+```
+
+### 💾 Update the Index and Detail Pages
+
+```html
+<!-- data/templates/default/pet/index/index.html -->
+<div>
+  <!-- 
+    Include the header component 
+    is: the page route of the component
+  -->
+  <header is="/pet/header" active="/list"></header>
+  <main>
+    <div s:for="pets" s:for-item="pet" class="card">
+      <h2>{{ pet.pet_name }}</h2>
+      <p>Category: {{ pet.category.category_name }}</p>
+      <button s:on-click="viewDetails" s:data-id="{{ pet.id }}">
+        View Details
+      </button>
+    </div>
+  </main>
+  <footer is="/pet/footer" name="Pet List"></footer>
+</div>
+```
+
+```html
+<!-- data/templates/default/pet/[id]/[id].html -->
+<div>
+  <header is="/pet/header" active="/list"></header>
+  <main>
+    <div class="breadcrumb">
+      <a href="/pet/index">Back to Pet List</a>
+    </div>
+    <div class="card">
+      <h2>{{ pet.pet_name }}</h2>
+      <p>Category: {{ pet.category.category_name }}</p>
+      <p>Age: {{ pet.age }}</p>
+      <p>Breed: {{ pet.breed }}</p>
+      <p>Description: {{ pet.description }}</p>
+    </div>
+  </main>
+  <footer is="/pet/footer" name="Pet Details"></footer>
+</div>
+```
+
+For more details, check out the 👉 [Website Tutorials](/docs/tutorials/website/getting-started)
+
 ## 🎉 Congratulations
+
+You've successfully created web pages using SUI and integrated data into them. You've also learned how to create components for code reusability.
+
+To learn more about SUI and building web pages, check out the complete tutorials: 👉 [Website Tutorials](/docs/tutorials/website/getting-started)
+
+In the next section, we'll build an admin panel to help administrators manage data in the pet store.
+
+- 🟢 Create and manage data in your application. 👉 [Data Model](data-model)
+- 🟢 Develop RESTful APIs to expose data. 👉 [REST API](rest-api)
+- 🟢 **Design web pages to display data.**
+- 🔵 Build an admin panel to help administrators of the pet store manage data. 👉 [Admin Panel](admin-panel)
+- ⚪ Create backend commands for task scheduling. 👉 [CLI](cli)
+- ⚪ Integrate AI for chatbots, image generation, and enhanced user input. 👉 [AI Integration](ai-integration)
+
+Use the following links to generate web pages via Chat:
+
+👉 [Yao Playground](https://github.com/YaoApp/playground)
+
+👉 [Yao Application Generator](https://mopai.ai)

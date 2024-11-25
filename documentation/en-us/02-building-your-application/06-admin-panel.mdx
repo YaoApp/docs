@@ -41,7 +41,310 @@ The complete Admin Panel tutorial is available here: 👉 **[Admin Panel Tutoria
 
 ## Step 1: Browse the Admin Panel
 
+Before proceeding, ensure you've reviewed the previous documentation to understand the Yao application's directory structure and have created a Yao application using the Quick Start Guide.
+
+👉 [Quickstart](../getting-started#quickstart)
+
+👉 [Yao Application](../getting-started/switching-to-yao#yao-application)
+
+To browse the admin panel, open the browser and navigate to `http://127.0.0.1:5099/admin/`. _Replace the IP address and port with your server's IP address and port._
+
+|           |                                                              |
+| --------- | ------------------------------------------------------------ |
+| Admin URL | [http://127.0.0.1:5099/admin/](http://127.0.0.1:5099/admin/) |
+| Account   | demo@moapi.ai                                                |
+| Password  | demo@5099                                                    |
+
+Enter the account and password to log in to the admin panel.
+
 ## Step 2: Generate the DSLs
+
+We will create 4 widgets, to manage pets and pet categories in the admin panel.
+
+1. **Pet Table**: `tables/pets.tab.yao` Display pets in a table.
+2. **Pet Form**: `forms/pet.form.yao` Add or edit pets in a form.
+3. **Pet Category Table**: `tables/pet-categories.tab.yao` Display pet categories in a table.
+4. **Pet Category Form**: `forms/pet-category.form.yao` Add or edit pet categories in a form.
+
+Send the Model DSLs and one or more one or more existing Table/Form DSL examples to the chatbot, ask for assistance in generating similar Table/Form DSLs.
+
+You can get an existing Table/Form DSL examples from the Yao documentation or other public repositories. in this case, we get them from the Yao website repository.
+
+| Source URL                                                                                              |
+| ------------------------------------------------------------------------------------------------------- |
+| 👉 [article.tab.yao](https://github.com/YaoApp/yao-website/blob/main/tables/article.tab.yao)            |
+| 👉 [category.tab.yao](https://github.com/YaoApp/yao-website/blob/main/tables/article/category.tab.yao)  |
+| 👉 [article.form.yao](https://github.com/YaoApp/yao-website/blob/main/forms/article.form.yao)           |
+| 👉 [category.form.yao](https://github.com/YaoApp/yao-website/blob/main/forms/article/category.form.yao) |
+
+### 💬 Prompts for Generating Table and Form DSLs
+
+_This is an example of a conversation with an AI chatbot to generate table and form DSLs. Change the prompts according to your requirements._
+
+````markdown
+# DSL Generation Task
+
+## DSL Samples Reference
+
+- **Table DSL Samples**: [Table DSL Samples]
+- **Form DSL Samples**: [Form DSL Samples]
+- **Model DSLs**: [Model DSLs]
+
+## Requirements
+
+### 1. Generate a Table DSL for Model `pets`
+
+- **File**: `pets.tab.yao`
+- **Path**: `pets`
+- **Fields**: Use the fields from the Model `Pet`, which are suitable for a table.
+- **Add and Edit**: The Form Window opens from the right side.
+- **Bind**: Bind the table to `model.pets` and the form `pets`.
+
+### 2. Generate a Form DSL for Model `pets`
+
+- **File**: `pets.form.yao`
+- **Path**: `pets`
+- **Fields**: Use the fields from the Model `Pet`, and ensure the layout is easy to use.
+- **Bind**: Bind the form to the table `pets`.
+
+### 3. Generate a Table DSL for Model `pet.categories`
+
+- **File**: `pet/category.tab.yao`
+- **Path**: `pet/categories`
+- **Name**: `pet.categories`
+- **Fields**: Use the fields from the Model `PetCategory`, which are suitable for a table.
+- **Add and Edit**: The Form Window opens from the right side.
+- **Bind**: Bind the table to `model.pet.categories` and the form `pet.categories`.
+
+### 4. Generate a Form DSL for Model `pet.categories`
+
+- **File**: `pet/categories.form.yao`
+- **Path**: `pet/categories`
+- **Name**: `pet.categories`
+- **Fields**: Use the fields from the Model `PetCategory`, and ensure the layout is easy to use.
+- **Bind**: Bind the form to the table `pet.categories`.
+
+## Output Instructions
+
+For each DSL:
+
+1. Return the code inside a **separate code block**.
+2. Add comments indicating the respective **file name** above each block, use // for comments.
+
+### Example Output Format
+
+```json
+// pets.tab.yao
+<Generated Table DSL for Model pets>
+```
+
+```json
+// pets.form.yao
+<Generated Form DSL for Model pets>
+```
+
+```json
+// pet/categories.tab.yao
+<Generated Table DSL for Model pet.categories>
+```
+
+```json
+// pet/categories.form.yao
+<Generated Form DSL for Model pet.categories>
+```
+````
+
+### 🤖 _Reply from AI Chatbot_
+
+The AI chatbot will generate the table and form DSLs for you. It looks like this:
+
+```json
+// pet/category.tab.yao
+{
+  "name": "Pet Categories",
+  "action": {
+    "bind": {
+      "model": "pet.categories",
+      "option": { "form": "pet.categories" }
+    },
+    "before:search": "scripts.hooks.OrderBySort"
+  },
+  "layout": {
+    "header": {},
+    "primary": "id",
+    "filter": {
+      "columns": [{ "name": "Category Name" }],
+      "actions": [
+        {
+          "title": "Add Category",
+          "icon": "icon-plus",
+          "style": "primary",
+          "action": [
+            {
+              "name": "openModal",
+              "type": "Common.openModal",
+              "payload": {
+                "byDrawer": { "mask": true },
+                "Form": { "type": "add", "model": "pet.categories" }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "table": {
+      "columns": [
+        { "name": "ID", "width": 60 },
+        { "name": "Category Name", "width": 200 },
+        { "name": "Description", "width": 300 }
+      ],
+      "operation": {
+        "fold": false,
+        "actions": [
+          {
+            "style": "primary",
+            "title": "Edit",
+            "icon": "icon-edit-2",
+            "action": [
+              {
+                "name": "openModal",
+                "type": "Common.openModal",
+                "payload": {
+                  "byDrawer": { "mask": true },
+                  "Form": {
+                    "type": "edit",
+                    "model": "pet.categories",
+                    "params": { "id": "{{id}}" }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "style": "danger",
+            "title": "Delete",
+            "icon": "icon-trash-2",
+            "action": [
+              {
+                "name": "Confirm",
+                "type": "Common.confirm",
+                "payload": {
+                  "title": "Please confirm to delete [{{ category_name }}]",
+                  "content": "This action is irreversible! The category will be permanently deleted."
+                }
+              },
+              { "name": "Delete", "type": "Table.delete", "payload": {} }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "fields": {
+    "filter": {
+      "Category Name": {
+        "bind": "where.category_name.match",
+        "edit": {
+          "type": "Input",
+          "props": { "placeholder": "Category Name" }
+        }
+      }
+    },
+    "table": {
+      "ID": {
+        "bind": "id",
+        "view": { "type": "Text" }
+      },
+      "Category Name": {
+        "bind": "category_name",
+        "view": { "type": "Text", "props": { "weight": "medium" } },
+        "edit": { "type": "Input", "props": { "placeholder": "Category Name" } }
+      },
+      "Description": {
+        "bind": "description",
+        "view": { "type": "Text" },
+        "edit": {
+          "type": "TextArea",
+          "props": { "placeholder": "Description" }
+        }
+      }
+    }
+  }
+}
+```
+
+```json
+// pet/categories.form.yao
+{
+  "name": "Pet Category",
+  "action": { "bind": { "table": "pet.categories" } },
+  "layout": {
+    "primary": "id",
+    "actions": [
+      {
+        "title": "Save",
+        "icon": "icon-save",
+        "style": "primary",
+        "showWhenAdd": true,
+        "action": [{ "name": "Submit", "type": "Form.submit" }]
+      },
+      {
+        "title": "Delete",
+        "icon": "icon-trash-2",
+        "style": "danger",
+        "action": [
+          {
+            "name": "Confirm",
+            "type": "Common.confirm",
+            "payload": {
+              "title": "Please confirm to delete [{{ category_name }}]",
+              "content": "This action is irreversible!"
+            }
+          },
+          { "name": "Delete", "type": "Table.delete", "payload": {} }
+        ]
+      },
+      {
+        "title": "Close",
+        "icon": "icon-arrow-left",
+        "showWhenAdd": true,
+        "showWhenView": true,
+        "action": [
+          { "name": "CloseModal", "type": "Common.closeModal", "payload": {} }
+        ]
+      }
+    ],
+    "form": {
+      "sections": [
+        {
+          "columns": [
+            { "name": "Category Name", "width": 24 },
+            { "name": "Description", "width": 24 }
+          ]
+        }
+      ]
+    }
+  },
+  "fields": {
+    "form": {
+      "Category Name": {
+        "bind": "category_name",
+        "edit": {
+          "type": "Input",
+          "props": { "placeholder": "Input the category name" }
+        }
+      },
+      "Description": {
+        "bind": "description",
+        "edit": {
+          "type": "TextArea",
+          "props": { "placeholder": "Input the description of the category" }
+        }
+      }
+    }
+  }
+}
+```
 
 ## Step 3: Save the DSLs
 

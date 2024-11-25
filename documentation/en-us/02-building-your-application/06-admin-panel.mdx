@@ -348,7 +348,136 @@ The AI chatbot will generate the table and form DSLs for you. It looks like this
 
 ## Step 3: Save the DSLs
 
+After generating the DSLs, save them in the `tables` and `forms` directories in your Yao application.
+
+### 💾 Save to Tables and Forms directories
+
+| Widget Type | Widget ID      | Path                          |
+| ----------- | -------------- | ----------------------------- |
+| Table       | pets           | tables/pets.tab.yao           |
+| Table       | pet.categories | tables/pet-categories.tab.yao |
+| Form        | pets           | forms/pets.form.yao           |
+| Form        | pet.categories | forms/pet-categories.form.yao |
+
+After saving the DSLs, the tables and forms directories should look like this:
+
+```bash
+├── forms
+│   ├── account.form.yao
+│   ├── pet
+│   │   └── categories.form.yao
+│   └── pets.form.yao
+├── tables
+│   ├── account.tab.yao
+│   ├── pet
+│   │   └── categories.tab.yao
+│   └── pets.tab.yao
+```
+
 ## Step 4: Test the Admin Panel
+
+In development mode, the HTTP server auto-reloads widgets when DSLs are updated. Just refresh the browser to see the changes in the admin panel.
+
+### 📜 Admin Panel Routes
+
+The Widgets for the Admin Panel are available at the following routes:
+
+**https://127.0.0.1:5099/admin/x/{widget-type}/{widget-id}**
+
+| Widget Type | Description             |
+| ----------- | ----------------------- |
+| Table       | Table view of the data. |
+| Form        | Form view of the data.  |
+| Dashboard   | Dashboard view.         |
+| Chart       | Chart view.             |
+
+#### Table Routes
+
+**https://127.0.0.1:5099/admin/x/Table/{widget-id}**
+
+| Widget ID      | Path                          | Route                                              |
+| -------------- | ----------------------------- | -------------------------------------------------- |
+| pets           | tables/pets.tab.yao           | http://127.0.0.1:5099/admin/x/Table/pets           |
+| pet.categories | tables/pet/categories.tab.yao | http://127.0.0.1:5099/admin/x/Table/pet.categories |
+
+#### Form Routes
+
+- **https://127.0.0.1:5099/admin/x/Form/{widget-id}/{data-id}/view** view mode
+- **https://127.0.0.1:5099/admin/x/Form/{widget-id}/{data-id}/edit** edit mode
+
+data-id is 0 for add mode.
+
+| Widget ID      | Path                          | Route                                                    |
+| -------------- | ----------------------------- | -------------------------------------------------------- |
+| pets           | forms/pets.form.yao           | http://127.0.0.1:5099/admin/x/Form/pets/0/edit           |
+| pet.categories | forms/pet/categories.form.yao | http://127.0.0.1:5099/admin/x/Form/pet.categories/0/edit |
+
+### 🌐 Debug in Browser
+
+1. Log in to the admin panel and navigate to routes in the URL to view the tables.
+   **_Note: Stay in the same tab to avoid being logged out._**
+2. Open the browser’s developer tools to check for errors in the console.
+3. Errors may occur if components are misconfigured or DSLs are incorrectly generated. Debug using the error messages, fix the DSLs, and refresh the page to apply changes.
+
+### 💾 Add to Menu
+
+After testing the widgets, add them to the admin panel menu.
+
+The menu logic is defined in the `app.yao` file, with `flows.menu` as the default process. 👉 **[App Configuration](app-configuration)**
+
+There are two types of menu item icons: `Material` and `Feather`.
+
+| Icon Type | Usage             | Example           | URL                                                                        |
+| --------- | ----------------- | ----------------- | -------------------------------------------------------------------------- |
+| Feather   | icon-\[name\]     | icon-activity     | [Feather Icons](https://feathericons.com/)                                 |
+| Material  | material-\[name\] | material-favorite | [Material Icons](https://fonts.google.com/icons?icon.set=Material+Symbols) |
+
+1. open the `flows/menu.flow.yao` file.
+2. Add the menu items to the `items.items` array.
+3. Relogin to the admin panel to view the new menu items.
+
+```json
+{
+  "name": "Menu",
+  "nodes": [],
+  "output": {
+    "items": [
+      {
+        "name": "Generator",
+        "path": "/iframe?src=https://moapi.ai/iframe/yaoapp", // For production
+        "icon": "material-mark_chat_unread"
+      },
+
+      // Add the new menu items here
+      {
+        "name": "Pets", // Menu Item Name
+        "path": "/x/Table/pets", // The default route should navigate to a sub-menu.
+        "icon": { "name": "material-pets", "size": 22 }, // Material Icon
+        "children": [
+          // Submenu
+          {
+            "name": "Pets",
+            "path": "/x/Table/pets",
+            "icon": { "name": "material-pet_supplies", "size": 22 }
+          },
+          {
+            "name": "Pet Categories",
+            "path": "/x/Table/pet.categories",
+            "icon": { "name": "material-category", "size": 22 }
+          }
+        ]
+      }
+    ],
+    "setting": [
+      {
+        "icon": { "name": "material-person_pin_circle", "size": 22 },
+        "name": "Accounts",
+        "path": "/x/Table/account"
+      }
+    ]
+  }
+}
+```
 
 ## Step 5: Hooks (Optional)
 

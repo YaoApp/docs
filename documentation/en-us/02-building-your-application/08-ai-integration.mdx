@@ -1,0 +1,134 @@
+---
+title: AI Integration
+description:
+related:
+  title: Next Steps
+  description: Deploying Your Application
+  links:
+    - deploying-your-application
+---
+
+In this section, we’ll integrate AI into our application to enhance user input, generate images, and create chatbots.
+
+- 🟢 Create and manage data in your application. 👉 [Data Model](data-model)
+- 🟢 Develop RESTful APIs to expose data. 👉 [REST API](rest-api)
+- 🟢 Design web pages to display data. 👉 [Web Page](web-page)
+- 🟢 Build an admin panel to help administrators of the pet store manage data.
+- 🟢 Create backend commands for task scheduling. 👉 [CLI](cli)
+- 🟠 **Integrate AI for chatbots, image generation, and enhanced user input.**
+
+Ensure you have read the previous documentation, and the previous steps are completed before proceeding.
+
+👉 [Admin Panel](admin-panel)
+
+👉 [Building Your Application](../building-your-application)
+
+## Overview
+
+Integrating AI into your Yao application enhances user experience, automates tasks, and unlocks valuable insights.
+
+**Key Use Cases:**
+
+- **Chatbots**: A built-in assistant that serves as the user's natural language interface to interact with your application.
+- **AI-Generated Content**: Use prompts as a Process to generate text, images, and other content dynamically with AI.
+- **AI-Powered Input**: Enhance user input with features like auto-complete, spell-check, translation, and image generation.
+- **AI Agents**: Create intelligent agents that automate tasks by accessing application data, Yao Processes, and runtime APIs.
+
+## Connector
+
+Yao supports integration with the OpenAI API. If you're using a different AI API, you can convert its requests and responses to match the OpenAI format.
+
+### 📜 Create Connectors
+
+Use the Connector Widget to configure the API key and other settings
+
+```json
+// connectors/gpt-4o.conn.yao
+{
+  "label": "Model gpt-4o", // The name of the model for display
+  "type": "openai", // The type of the connector, openai only for now
+  "options": {
+    "model": "gpt-4o", // The AI Model name
+    "key": "$ENV.OPENAI_API_KEY", // The API key, supports environment variables
+    "proxy": "http://ip:port" // Optional proxy server, if needed
+  }
+}
+```
+
+```json
+// connectors/text-embedding-ada-002.conn.yao
+{
+  "label": "text-embedding-ada-002",
+  "type": "openai",
+  "options": {
+    "model": "text-embedding-ada-002",
+    "key": "$ENV.OPENAI_API_KEY"
+  }
+}
+```
+
+The directory structure for the connectors is as follows:
+
+```bash
+├── connectors
+│   ├── gpt-4o.conn.yao
+│   └── text-embedding-ada-002.conn.yao
+```
+
+### 📺 Start the Http Server
+
+Use yao start to start the server.
+
+If used the environment variable, you can set it in the .env file in your project root directory. 👉 **[App Configuration](app-configuration)**
+
+```bash
+# ...
+OPENAI_API_KEY=your-api-key
+# ....
+```
+
+After the application started, the connectors are loaded and available for use in your application.
+
+```bash
+---------------------------------
+Connectors List (2)
+---------------------------------
+[Connector] gpt-4o       loaded
+[Connector] text-embedding-ada-002       loaded
+```
+
+## Chatbots
+
+The built-in chatbot, **Neo**, is configured using the file `neo/neo.yml`. Once configured, you can access the chatbot from the bottom-right corner of the admin panel.
+
+```yaml
+# guard: "scripts.neo.Guard" # Custom guard, you can use it to check if the user is allowed to access the AI model
+
+conversation:
+  connector: default
+  table: yao_neo_conversation
+  max_size: 10
+  ttl: 3600
+
+connector: "gpt-4o" #  Enter the connector widget ID
+prepare: "scripts.ai.neo.Prepare" # Prepare hook, you can use it to modify the input before sending it to the AI model.
+write: "scripts.ai.neo.Write" # Write hook, you can use it to modify the output before sending it to the user
+
+option:
+  temperature: 0.6
+
+# CORS Settings, witch domains are allowed to access the chatbot API
+allows:
+  - "http://127.0.0.1:8000"
+  - "http://127.0.0.1:5099"
+  - "http://localhost:5099"
+  - "http://localhost:8000"
+```
+
+Open browser and navigate to the admin panel, you can see the chatbot in the bottom-right corner.
+
+## AI-Generated Content
+
+## AI-Powered Input
+
+## AI Agents

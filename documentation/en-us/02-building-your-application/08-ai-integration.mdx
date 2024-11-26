@@ -178,4 +178,186 @@ Bonjour
 
 ## AI-Powered Input
 
+Each component in the Form DSL has an `ai` property. When set, an AI icon will appear in the top-right corner of the input box. Clicking the icon lets you enter a prompt and send it to the Neo chatbot by pressing the "Send" button. This sends a special message, including the context, prompt, and current form data.
+
+In `neo/neo.yml`, you can use the `Prepare` hook to modify the input before sending it to the AI model, and the `Write` hook to modify the output before it's sent to the user.
+
+By default, `Prepare` and `Write` hooks are defined in `scripts/ai/neo.ts` during installation.
+
+```typescript
+// scripts/ai/neo.ts
+import { io, neo } from "@yao/runtime";
+
+/**
+ * Neo Prepare hook
+ */
+function Prepare(ctx: neo.Context, messages: neo.Message[]): neo.Message[] {
+  return messages;
+}
+
+/**
+ * Neo Write hook
+ */
+function Write(
+  ctx: neo.Context,
+  messages: neo.Message[],
+  response: neo.Response,
+  content?: string,
+  writer?: io.ResponseWriter
+): neo.Response[] {
+  return [response];
+}
+```
+
+### Modify the Form DSL
+
+Modify the Form DSL to include the `ai` property for `fields.form.Description`.
+
+```json
+{
+  // ....
+  "fields": {
+    "form" {
+      // ....
+      "Description": {
+        "bind": "description",
+        "edit": {
+          "type": "TextArea",
+          "props": {
+            // Add the ai property here
+            "ai": {
+              "placeholder": "Input the prompt, and I will generate the description for you."
+            },
+            "placeholder": "Input the description of the pet"
+          }
+        }
+      }
+      // ....
+    }
+  }
+  // ....
+}
+```
+
+### 💾 Modify the Prepare and Write Hooks
+
+You can modify the `Prepare` and `Write` hooks to customize the input and output of the chatbot.
+
+**neo/neo.ts**
+
+**Prepare:** Before sending the input to the AI model, add special prompts for the field input
+
+```typescript
+/**
+ * Neo Prepare hook
+ */
+function Prepare(ctx: neo.Context, messages: neo.Message[]): neo.Message[] {
+  // Print the namespace and field to the terminal for debugging
+  console.log(`Prepare: ${ctx.namespace}`);
+  console.log(ctx.namespace);
+  console.log(ctx.field);
+  console.log(ctx.formdata);
+
+  //  the namespace is "Table-Page-pets/Form-Modal-pets" and the field is "description", Field is the current field that the user is interacting with.
+  if (ctx.namespace === "Table-Page-pets/Form-Modal-pets") {
+    switch (ctx.field?.bind) {
+      case "description":
+        // Add a prompt to generate a description for the pet
+        const lastMessage = messages[messages.length - 1];
+        const prompts: neo.Message[] = [
+          {
+            role: "system",
+            content: `FORMDATA: ${JSON.stringify(ctx.formdata || {})}`,
+          },
+          {
+            role: "system",
+            content: `
+              - According to the formdata I provided, generate a description for the pet.
+              - The description should be a short paragraph that describes the pet.
+              - Answer me the description only, do not include any other information.
+            `,
+          },
+          lastMessage,
+        ];
+
+        // For debugging, print the prompts to the terminal
+        console.log("--- Prompts Content---");
+        console.log(prompts);
+        return prompts;
+    }
+  }
+
+  // The default behavior is to return the messages as-is
+  return messages;
+}
+```
+
+**Write:** After receiving the output from the AI model, modify the output add action to update the form data.
+
+```typescript
+/**
+ * Neo Write hook
+ */
+function Write(
+  ctx: neo.Context,
+  messages: neo.Message[],
+  response: neo.Response,
+  content?: string,
+  writer?: io.ResponseWriter
+): neo.Response[] {
+  // Print the namespace and field to the terminal for debugging
+  console.log(ctx.namespace);
+  console.log(ctx.field);
+  console.log(ctx.formdata);
+
+  //  the namespace is "Table-Page-pets/Form-Modal-pets" and the field is "description", Field is the current field that the user is interacting with.
+  if (
+    ctx.namespace === "Table-Page-pets/Form-Modal-pets" &&
+    ctx.field?.bind === "description"
+  ) {
+    const { namespace, field } = ctx;
+    if (content === undefined) {
+      return [response];
+    }
+
+    if (!response.done) {
+      return [response];
+    }
+
+    response.actions = [
+      {
+        name: "Done",
+        type: "Common.emitEvent",
+        payload: { key: `${namespace}/${field.bind}/unloading` },
+      }, // mark the field as done
+      {
+        name: "SetFieldsValue",
+        type: "Common.emitEvent",
+        payload: {
+          key: `${namespace}/setFieldsValue`,
+          value: { description: content },
+        },
+      }, // Update the formdata with the description field
+      {
+        name: "SetNeoVisible",
+        type: "Common.emitEvent",
+        payload: {
+          key: `app/setNeoVisible`,
+          value: { visible: true },
+        },
+      }, // show the chatbot, for editing the output
+    ];
+
+    console.log("--- Response Actions ---");
+    console.log(response.actions);
+    console.log("--- Response ---");
+  }
+
+  // the default behavior is to return the response as-is
+  return [response];
+}
+```
+
+For more information, refer to the 👉 **[AI-powered Input Tutorial](/docs/tutorials/ai-input/getting-started)**
+
 ## AI Agents

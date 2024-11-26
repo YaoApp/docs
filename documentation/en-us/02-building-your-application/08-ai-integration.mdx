@@ -101,6 +101,8 @@ Connectors List (2)
 
 The built-in chatbot, **Neo**, is configured using the file `neo/neo.yml`. Once configured, you can access the chatbot from the bottom-right corner of the admin panel.
 
+Open the `neo/neo.yml` file and configure the chatbot settings, set the connector to `gpt-4o` .
+
 ```yaml
 # guard: "scripts.neo.Guard" # Custom guard, you can use it to check if the user is allowed to access the AI model
 
@@ -128,6 +130,51 @@ allows:
 Open browser and navigate to the admin panel, you can see the chatbot in the bottom-right corner.
 
 ## AI-Generated Content
+
+Use the AIGC widget make a Process to generate text, images, and other content dynamically with AI.
+
+**_Note: The AIGC widget DSL is in YAML format, used for inputting prompts._**
+
+### 📜 Create a AIGC widget
+
+The AIGC widget uses the `.ai.yml` file extension.
+
+Create a AIGC widget file `aigc/translate.ai.yml` and set connector to `gpt-4o`, and add prompts.
+
+```yaml
+# Translate
+name: Translate
+connector: gpt-4o # Specify the connector widget ID
+prompts:
+  - role: system
+    content: |
+      - Translate the message to French.
+```
+
+### 📺 Execute the Process
+
+The AIGC widget provides the "aigcs.[widget-id]" process to execute the prompts.
+
+Open terminal and run the command `yao run aigcs.translate`.
+
+```bash
+cd /path/to/your/project
+
+yao run aigcs.translate Hello
+```
+
+The output will be displayed in the terminal.
+
+```bash
+Run: aigcs.translate
+args[0]: Hello
+--------------------------------------
+aigcs.translate Response
+--------------------------------------
+Bonjour
+--------------------------------------
+✨DONE✨
+```
 
 ## AI-Powered Input
 

@@ -361,3 +361,127 @@ function Write(
 For more information, refer to the 👉 **[AI-powered Input Tutorial](/docs/tutorials/ai-input/getting-started)**
 
 ## AI Agents
+
+Through the Prepare and Write hooks, you can create intelligent agents that automate tasks by accessing application data, Yao Processes, and runtime APIs.
+
+> **Note:** The AI Agent feature is still experimental and may change in future versions. For security reasons, some limitations might be added later.
+
+### Organizing Your AI Agents
+
+1. **Directory Structure**: Place all your AI agents in the `agents` directory.
+2. **Interface Definition**: Define the `Agent` interface.
+3. **Implementation**: Implement the logic for each agent.
+
+By following these steps, you can streamline task automation within your application.
+
+```bash
+├── scripts
+│   ├── ai
+│   │   ├── actions.ts
+│   │   ├── agents
+│   │   │   ├── article
+│   │   │   │   ├── content.ts
+│   │   │   │   ├── cover.ts
+│   │   │   │   └── share_message.ts
+│   │   │   ├── defaults.ts
+│   │   │   ├── playground.ts
+│   │   │   └── select.ts
+│   │   ├── aigcs
+│   │   │   └── doc.ts
+│   │   ├── neo.ts
+│   │   └── utils.ts
+```
+
+```typescript
+export interface IAgent {
+  Prepare: (context: Context, messages: Message[]) => Message[];
+  Write: (
+    context: Context,
+    messages: Message[],
+    response: Response,
+    content?: string,
+    writer?: io.ResponseWriter
+  ) => Response[];
+}
+```
+
+To maintain clarity and simplicity, keep the `Prepare` and `Write` hooks in `scripts/ai/neo.ts` straightforward. Delegate the complex logic to the agents.
+
+```typescript
+import { io, neo } from "@yao/runtime";
+import { DefaultChat, DefaultInput } from "./agents/defaults";
+import { SelectAgent } from "./agents/select";
+
+/**
+ * Neo Prepare hook
+ */
+function Prepare(ctx: neo.Context, messages: neo.Message[]): neo.Message[] {
+  const { namespace, field } = ctx;
+
+  const agent = SelectAgent(ctx);
+  if (agent) {
+    return agent.Prepare(ctx, messages);
+  }
+
+  // AI Powered Input
+  if (namespace && field && field.bind) {
+    return DefaultInput.Prepare(ctx, messages);
+  }
+
+  // AI Chatbot
+  return DefaultChat.Prepare(ctx, messages);
+}
+
+/**
+ * Neo Write hook
+ */
+function Write(
+  ctx: neo.Context,
+  messages: neo.Message[],
+  response: neo.Response,
+  content?: string,
+  writer?: io.Writer
+): neo.Response[] {
+  const { namespace, field } = ctx;
+  const agent = SelectAgent(ctx);
+  if (agent) {
+    return agent.Write(ctx, messages, response, content, writer);
+  }
+
+  // AI Powered Input
+  if (namespace && field && field.bind) {
+    return DefaultInput.Write(ctx, messages, response, content, writer);
+  }
+
+  // AI Chatbot
+  return DefaultChat.Write(ctx, messages, response, content);
+}
+```
+
+For more information on creating and managing AI agents, please refer to the following resources:
+
+- 👉 **[AI Agent Tutorial](/docs/tutorials/ai-agent/getting-started)**: A comprehensive guide to help you get started with AI agents.
+- 👉 **[Yao Website Repo](https://github.com/YaoApp/yao-website)**: Explore the Yao Website Repository for more examples of AI agents and best practices.
+
+These resources provide valuable insights and examples to help you enhance your AI agent development.
+
+## 🎉 Congratulations
+
+You have successfully integrated AI into your application to enhance user input and create chatbots.
+
+- 🟢 Create and manage data in your application. 👉 [Data Model](data-model)
+- 🟢 Develop RESTful APIs to expose data. 👉 [REST API](rest-api)
+- 🟢 Design web pages to display data. 👉 [Web Page](web-page)
+- 🟢 Build an admin panel to help administrators of the pet store manage data. 👉 [Admin Panel](admin-panel)
+- 🟢 Create backend commands for task scheduling. 👉 [CLI](cli)
+- 🟢 **Integrate AI for chatbots, image generation, and enhanced user input.**
+
+Next, you can deploy your application to make it accessible to users.
+
+👉 [Deploying Your Application](../deploying-your-application)
+
+**💬 Build App via Chat:**
+
+👉 [Yao Playground](https://github.com/YaoApp/playground)
+
+👉 [Yao Application Generator](https://mopai.ai)

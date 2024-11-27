@@ -39,6 +39,20 @@ cd /path/to/your/application
 scp -r . user@server:/path/to/destination
 ```
 
+**❗ Change the permissions of the application files:**
+
+Keep the application files read-only and the data, db, and logs directories read-write. This is a good practice for security.
+
+```bash
+# @ Server
+cd /path/to/destination
+chown -R [user]:[group] . # Change the owner of the files to the user and group, e.g., webuser:webuser
+chmod -R 555 .  # Set the files to read-only
+chmod -R 755 data # Set the data directory to read-write
+chmod -R 755 logs # Set the logs directory to read-write
+chmod -R 755 db # Set the db directory to read-write
+```
+
 ### Step 3: Configure Your Application
 
 Modify the .env file on the server to configure your application. 👉 [App Configuration](../building-your-application/app-configuration#environment-variables)
@@ -82,12 +96,14 @@ Use [nohup](https://man7.org/linux/man-pages/man1/nohup.1p.html) to start your a
 
 ```bash
 # Start your application in the background
+# ❗DO NOT run this command under the root user, it should be same as the owner of the application files.
 cd /path/to/your/application && nohup yao start >> /path/to/your/application/yao.log 2>&1 &
 ```
 
 **❗Recommended: Use PM2 or a similar process manager to manage the yao start process for improved reliability and uptime.**
 
 ```bash
+# ❗DO NOT run this command under the root user, it should be same as the owner of the application files.
 cd /path/to/your/application
 
 # start your application with pm2
@@ -101,3 +117,81 @@ pm2 logs yao-app
 ```
 
 ## Docker Container
+
+You can also deploy your application in a Docker container.
+
+### Step 1: Build Docker Image
+
+Dockefile:
+
+```Dockerfile
+FROM yaoapp/yao:0.10.4-amd64
+
+# Add your application files to the container
+ADD /path/to/your/application /data/app
+
+# Copy the production environment file
+RUN cp /data/app/.env.online /data/app/.env
+
+# Change the permissions of the application files:
+#   /data/app Read-Only (755 should work for directories, files are 444)
+#   /data/app/data Read-Write
+#   /data/app/logs Read-Write
+#   /data/app/db Read-Write
+RUN chown -R yao:yao /data/app && \
+    chmod -R 555 /data/app && \
+    chmod -R 755 /data/app/data && \
+    chmod -R 755 /data/app/logs && \
+    chmod -R 755 /data/app/db
+
+# Declare volumes for persistent data and logs
+VOLUME /data/app/data
+VOLUME /data/app/logs
+VOLUME /data/app/db
+
+# Expose the application port
+EXPOSE 5099
+
+# Start the Yao application
+CMD ["/usr/local/bin/yao", "start"]
+```
+
+Build and push the Docker image:
+
+```bash
+docker build -t your-registry.com/your-app:version .
+
+# Push the Docker image to your registry
+docker push your-registry.com/your-app:version
+```
+
+### Step 2: Run Docker Container
+
+```bash
+# Run the Docker container
+docker run -d --name your-app \
+  -v /path/to/host/app/data:/data/app/data \
+  -v /path/to/host/app/logs:/data/app/logs \
+  -v /path/to/host/app/db:/data/app/db \
+  -p 5099:5099 your-registry.com/your-app:version
+
+
+# Check the running container
+docker ps
+
+# Check logs
+docker logs your-app
+
+# Some useful commands
+docker exec -it your-app sh # Access the container shell
+docker exec your-app sh -c "yao migrate --force" # Migrate the database
+docker exec your-app sh -c "yao run [process]" # Run a custom process
+```
+
+## 🎉 Congratulations
+
+Your application is now deployed and running. 🚀
+
+Next, learn how to automate the deployment of your application whenever you push code to the github repository.
+
+👉 [Automatic Deployment](deploying-your-application/automatic-deployment)

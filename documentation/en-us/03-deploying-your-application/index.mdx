@@ -24,4 +24,80 @@ Further Reading:
 
 ## Yao Server
 
+The Yao server is a server with Yao installed. You can deploy your application to the server and run it.
+
+### Step 1: Install Yao
+
+First, you need to install Yao on the server. You can follow the 👉 [Installation Guide](../getting-started/installation) to install Yao.
+
+### Step 2: Upload Your Application
+
+Next, you need to upload your application source code to the server.
+
+```bash
+cd /path/to/your/application
+scp -r . user@server:/path/to/destination
+```
+
+### Step 3: Configure Your Application
+
+Modify the .env file on the server to configure your application. 👉 [App Configuration](../building-your-application/app-configuration#environment-variables)
+
+Example:
+
+```bash
+YAO_ENV=production
+YAO_DB_DRIVER="mysql"
+YAO_DB_PRIMARY="webuser:webpass@tcp(127.0.0.1:3306)/website?charset=utf8mb4&parseTime=True&loc=Local"
+```
+
+**📜 Tips**:
+
+1. Prepare two env files, one for development and one for production, copy the production env file to the server and rename it to .env
+2. Use `yao inspect` to check the configuration of your application. `cd /path/to/your/application && yao inspect`
+3. For production use, make sure to set `YAO_ENV=production` in the .env file, It reduces the log output and improves performance.
+
+### Step 4: Migration
+
+The first time you deploy your application or data model changes, you need to use the `yao migrate` command to migrate the database.
+
+`yao migrate` will detect the changes in the data model and apply them to the database. If you need to reset the database, you can use the `--reset` flag.
+
+**❗Migrate command is a dangerous operation, make sure to backup your database before running it.**
+
+```bash
+cd /path/to/your/application
+
+# Migrate command is a dangerous operation, make sure to backup your database before running it.
+yao migrate --force
+```
+
+> _Run other custom processes to prepare your application, such as seeding data, after the migration is complete, if necessary._
+
+### Step 5: Start Your Application
+
+After the migration is complete, you can start your application.
+
+Use [nohup](https://man7.org/linux/man-pages/man1/nohup.1p.html) to start your application in the background.
+
+```bash
+# Start your application in the background
+cd /path/to/your/application && nohup yao start >> /path/to/your/application/yao.log 2>&1 &
+```
+
+**❗Recommended: Use PM2 or a similar process manager to manage the yao start process for improved reliability and uptime.**
+
+```bash
+cd /path/to/your/application
+
+# start your application with pm2
+pm2 start "yao start" --name yao-app
+
+# Check list of running applications
+pm2 list
+
+# Check logs
+pm2 logs yao-app
+```
+
 ## Docker Container

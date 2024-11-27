@@ -150,7 +150,9 @@ YAO_SESSION_FILE="./db/.session" # Session file path | Required for file session
 
 ### 📜 Database Connection Strings
 
-#### For SQLite
+#### For SQLite:
+
+SQLite connection is the file path to the database file:
 
 ```json
 "/path/to/database.db"
@@ -163,7 +165,11 @@ YAO_DB_DRIVER="sqlite3"
 YAO_DB_PRIMARY="./db/yao.db"
 ```
 
-#### For MySQL
+#### For MySQL:
+
+> MySQL support is available starting from version 5.7, with version 8.0 or higher recommended.
+
+MySQL connection strings are in the format:
 
 ```json
 "[user]:[password]@tcp([server]:[port])/[database]?charset=utf8mb4&parseTime=True&loc=Local"
@@ -176,7 +182,7 @@ YAO_DB_DRIVER="mysql"
 YAO_DB_PRIMARY="webuser:webpass@tcp(127.0.0.1:3306)/website?charset=utf8mb4&parseTime=True&loc=Local"
 ```
 
-#### For PostgreSQL
+#### For PostgreSQL:
 
 Support for PostgreSQL is planned for future releases. Stay tuned for updates! 😊
 

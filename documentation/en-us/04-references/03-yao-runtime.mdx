@@ -1,15 +1,22 @@
 ---
-title: Yao Runtime
-description: Yao runtime
+title: Yao Runtime APIs
+description: The detailed reference for the Yao runtime APIs.
 ---
 
-data/docs/documentation/en-us/04-references/03-runtime-api/01-process.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/02-filesystem.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/03-http.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/04-store.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/05-query.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/06-console.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/07-log.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/08-exception.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/09-time.mdx
-data/docs/documentation/en-us/04-references/03-runtime-api/index.mdx
+Details of the Yao runtime APIs.
+
+## Runtime APIs
+
+| Documentation                         | Description                                                                                |
+| ------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [Process](yao-runtime/process)        | Executes a process, similar to the `yao run` command, to trigger workflows.                |
+| [File System](yao-runtime/filesystem) | Manages file system operations such as reading, writing, and modifying files.              |
+| [HTTP](yao-runtime/http)              | Handles HTTP requests and responses for communication between services.                    |
+| [Store](yao-runtime/store)            | Provides key-value store operations for efficient data storage and retrieval.              |
+| [Query](yao-runtime/query)            | Performs database query operations for retrieving and manipulating data.                   |
+| [Exception](yao-runtime/exception)    | Defines and manages exceptions for handling errors and custom error messages.              |
+| [Time](yao-runtime/time)              | Provides time-based functions like `time.After` and `time.Sleep` for delay and scheduling. |
+| [Console](yao-runtime/console)        | Displays console output in the terminal for debugging and monitoring.                      |
+| [Log](yao-runtime/log)                | Manages logging operations for tracking events, errors, and debugging information.         |
+| [atob](yao-runtime/atob)              | Decodes a base64-encoded string to its original form.                                      |
+| [btoa](yao-runtime/btoa)              | Encodes a string to base64 format.                                                         |

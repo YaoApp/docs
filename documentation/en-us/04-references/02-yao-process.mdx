@@ -1,4 +1,39 @@
 ---
-title: Yao Process
-description: Yao process is a process that helps you to create, build, and manage your Yao projects.
+title: Yao Process Reference
+description: A detailed reference to the Yao internal processes.
 ---
+
+A detailed reference to the Yao internal processes.
+
+## Internal Processes
+
+| Processes                         | Description                                                               | Documentation                                    |
+| --------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------ |
+| models.<model_widget_id>.\*       | Interacts with the database to perform CRUD operations on models.         | [Model Process](processes/models)                |
+| schemas.<connector_widget_id>.\*  | Manages the schema structure and database migrations.                     | [Schema Process](processes/schemas)              |
+| stores.<store_widget_id>.\*       | Provides key-value store operations for storing data.                     | [Store Process](processes/stores)                |
+| flows.<flow_widget_id>            | Executes and manages process flows within the application.                | [Flow Process](processes/flows)                  |
+| schedules.<schedule_widget_id>.\* | Defines scheduled tasks and periodic executions.                          | [Schedule Process](processes/schedule)           |
+| pipes.<pipe_widget_id>.\*         | Handles data flow between processes, such as streaming or piping.         | [Pipe Process](processes/pipe)                   |
+| pipe.\*                           | Provides utility processes for handling data pipes and flows.             | [Pipe Process](processes/pipe)                   |
+| fs.<namespace>.\*                 | Manages file system interactions, including reading and writing.          | [File System Process](processes/fs)              |
+| api.\*                            | Utility processes for managing and interacting with APIs.                 | [API Process](processes/api)                     |
+| http.\*                           | Processes HTTP requests and responses.                                    | [HTTP Process](processes/http)                   |
+| session.\*                        | Manages user sessions and state information.                              | [Session Process](processes/session)             |
+| encoding.\*                       | Provides encoding and decoding utilities for various formats.             | [Encoding Process](processes/encoding)           |
+| crypto.\*                         | Performs cryptographic operations, such as hashing and encryption.        | [Crypto Process](processes/crypto)               |
+| ssl.\*                            | Handles SSL/TLS encryption for secure communications.                     | [SSL Process](processes/ssl)                     |
+| utils.\*                          | Provides general utility functions for various tasks.                     | [Utils Process](processes/utils)                 |
+| openai.\*                         | Interacts with OpenAI services for AI-powered tasks.                      | [OpenAI Process](processes/openai)               |
+| moapi.\*                          | Processes related to MOAPI services for integrating APIs.                 | [MOAPI Process](processes/moapi)                 |
+| neo.\*                            | Manages Neo chatbot interactions and AI-driven conversations.             | [Neo Process](processes/neo)                     |
+| sui.\*                            | Provides utilities for the SUI engine and web page management.            | [SUI Process](processes/sui)                     |
+| yao.app.\*                        | Processes for managing the Yao application widget and logic.              | [Yao App Process](processes/yao-app)             |
+| yao.login.\*                      | Handles user authentication and login processes.                          | [Yao Login Process](processes/yao-login)         |
+| yao.table.\*                      | Manages table widget operations, including data binding and CRUD.         | [Yao Table Process](processes/yao-table)         |
+| yao.form.\*                       | Handles form widget operations, including data validation and submission. | [Yao Form Process](processes/yao-form)           |
+| yao.list.\*                       | Manages dashboard widgets and displays list-based data.                   | [Yao List Process](processes/yao-list)           |
+| yao.chart.\*                      | Manages chart widgets and data visualization in the admin panel.          | [Yao Chart Process](processes/yao-chart)         |
+| yao.dashboard.\*                  | Manages dashboard widgets for creating custom admin panels.               | [Yao Dashboard Process](processes/yao-dashboard) |
+| scripts.\*                        | Custom processes written in TypeScript to extend functionality.           | [Script Process](processes/scripts)              |
+| plugins.\*                        | Manages GRPC plugin integration and custom plugin logic.                  | [Plugin Process](processes/plugins)              |
